@@ -1,6 +1,7 @@
 defmodule Web.RegistrationResetControllerTest do
   use Web.ConnCase
-  use Bamboo.Test
+  import Swoosh.TestAssertions
+
 
   alias ExVenture.Users
 

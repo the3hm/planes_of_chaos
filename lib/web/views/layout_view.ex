@@ -1,5 +1,5 @@
 defmodule Web.LayoutView do
-  use Web, :view
+  use Web, :html
 
   import Web.Gettext, only: [gettext: 1]
 

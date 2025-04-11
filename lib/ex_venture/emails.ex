@@ -1,53 +1,52 @@
 defmodule ExVenture.Emails do
   @moduledoc false
 
-  use Bamboo.Phoenix, view: ExVenture.Emails.EmailView
-
+  import Swoosh.Email
   import Web.Gettext, only: [gettext: 1]
 
-  alias Web.Endpoint
+  alias ExVenture.Mailer
   alias Web.Router.Helpers, as: Routes
+  alias Web.Endpoint
 
   def welcome_email(user) do
     confirm_url = Routes.confirmation_url(Endpoint, :confirm, code: user.email_verification_token)
 
-    base_email()
+    new()
     |> to(user.email)
+    |> from({"ExVenture", "no-reply@example.com"})
     |> subject("Welcome to #{gettext("ExVenture")}!")
-    |> assign(:confirm_url, confirm_url)
-    |> render(:welcome)
+    |> render_body("welcome.html", confirm_url: confirm_url)
+    |> Mailer.deliver()
   end
 
   def verify_email(user) do
     confirm_url = Routes.confirmation_url(Endpoint, :confirm, code: user.email_verification_token)
 
-    base_email()
+    new()
     |> to(user.email)
+    |> from({"ExVenture", "no-reply@example.com"})
     |> subject("Please verify your email address")
-    |> assign(:confirm_url, confirm_url)
-    |> render(:verify_email)
+    |> render_body("verify_email.html", confirm_url: confirm_url)
+    |> Mailer.deliver()
   end
 
   def password_reset(user) do
     reset_url = Routes.registration_reset_url(Endpoint, :edit, token: user.password_reset_token)
 
-    base_email()
+    new()
     |> to(user.email)
+    |> from({"ExVenture", "no-reply@example.com"})
     |> subject("Password reset for #{gettext("ExVenture")}")
-    |> render("password-reset.html", reset_url: reset_url)
+    |> render_body("password_reset.html", reset_url: reset_url)
+    |> Mailer.deliver()
   end
 
-  defp base_email() do
-    new_email()
-    |> from("no-reply@example.com")
-  end
+  defp render_body(email, template, assigns) do
+    html = Web.EmailView.render_to_string(template, assigns)
+    text = Web.EmailView.render_to_string(template |> String.replace_suffix(".html", ".txt"), assigns)
 
-  defmodule EmailView do
-    @moduledoc false
-
-    use Phoenix.View, root: "lib/ex_venture/emails/templates", path: ""
-    use Phoenix.HTML
-
-    import Web.Gettext, only: [gettext: 1]
+    email
+    |> html_body(html)
+    |> text_body(text)
   end
 end

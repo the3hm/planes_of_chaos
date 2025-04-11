@@ -1,5 +1,5 @@
 defmodule Web.PageView do
-  use Web, :view
+  use Web, :html
 
   alias Web.ReactView
 

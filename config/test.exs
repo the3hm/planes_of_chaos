@@ -15,7 +15,7 @@ config :ex_venture, Web.Endpoint,
   http: [port: 4002],
   server: false
 
-config :ex_venture, ExVenture.Mailer, adapter: Bamboo.TestAdapter
+config :ex_venture, ExVenture.Mailer, adapter: Swoosh.Adapters.Test
 
 config :ex_venture, :listener, start: false
 

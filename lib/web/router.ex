@@ -59,7 +59,7 @@ defmodule Web.Router do
 
     get("/client", PageController, :client)
 
-    get("/client*page", PageController, :client)
+    get "/client/*page", PageController, :client
 
     resources("/characters", CharacterController, only: [:create, :delete])
 
@@ -109,6 +109,6 @@ defmodule Web.Router do
   end
 
   if Mix.env() == :dev do
-    forward("/emails/sent", Bamboo.SentEmailViewerPlug)
+    forward "/dev/mailbox", Plug.Swoosh.MailboxPreview
   end
 end

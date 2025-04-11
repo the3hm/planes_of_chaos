@@ -1,8 +1,7 @@
 defmodule Web.ErrorViewTest do
   use Web.ConnCase, async: true
 
-  # Bring render/3 and render_to_string/3 for testing custom views
-  import Phoenix.View
+  import Phoenix.Template  # ✅ Replaces deprecated Phoenix.View
 
   test "renders 404.html" do
     assert render_to_string(Web.ErrorView, "404.html", []) == "Not Found"

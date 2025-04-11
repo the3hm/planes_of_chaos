@@ -1,3 +1,3 @@
 defmodule Web.RegistrationResetView do
-  use Web, :view
+  use Web, :html
 end

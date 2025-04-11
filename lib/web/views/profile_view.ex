@@ -1,5 +1,5 @@
 defmodule Web.ProfileView do
-  use Web, :view
+  use Web, :html
 
   alias ExVenture.Users.Avatar
   alias Web.FormView

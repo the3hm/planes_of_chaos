@@ -1,5 +1,5 @@
 defmodule Web.Admin.UserView do
-  use Web, :view
+  use Web, :html
 
   alias Web.PaginationView
 end

@@ -1,5 +1,5 @@
 defmodule Web.Admin.ZoneView do
-  use Web, :view
+  use Web, :html
 
   alias Web.FormView
   alias Web.PaginationView

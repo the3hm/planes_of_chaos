@@ -52,7 +52,7 @@ config :ex_venture, Web.Endpoint,
     ]
   ]
 
-config :ex_venture, ExVenture.Mailer, adapter: Bamboo.LocalAdapter
+config :ex_venture, ExVenture.Mailer, adapter: Swoosh.Adapters.SMTP
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

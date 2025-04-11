@@ -1,5 +1,5 @@
 defmodule Web.Admin.RoomView do
-  use Web, :view
+  use Web, :html
 
   alias ExVenture.Rooms
   alias Web.FormView

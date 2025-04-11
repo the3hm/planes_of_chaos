@@ -1,5 +1,5 @@
 defmodule Web.API.RoomView do
-  use Web, :view
+  use Web, :html
 
   alias Web.Endpoint
   alias Web.API.Link

@@ -1,5 +1,5 @@
 defmodule Web.FormView do
-  use Web, :view
+  use Web, :html
 
   @doc """
   Label helper to optionally override the label text

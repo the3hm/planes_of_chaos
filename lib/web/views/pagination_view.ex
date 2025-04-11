@@ -1,5 +1,5 @@
 defmodule Web.PaginationView do
-  use Web, :view
+  use Web, :html
 
   def paginate(path, pagination) do
     render("paginate.html", path: path, pagination: pagination)

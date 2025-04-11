@@ -1,5 +1,5 @@
 defmodule Web.ReactView do
-  use Web, :view
+  use Web, :html
 
   @doc """
   Generate a react component tag

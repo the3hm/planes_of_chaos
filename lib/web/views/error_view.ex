@@ -1,5 +1,5 @@
 defmodule Web.ErrorView do
-  use Web, :view
+  use Web, :html
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

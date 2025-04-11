@@ -1,6 +1,7 @@
 defmodule ExVenture.UsersTest do
   use ExVenture.DataCase
-  use Bamboo.Test
+  import Swoosh.TestAssertions
+
 
   alias ExVenture.Users
 
@@ -102,7 +103,9 @@ defmodule ExVenture.UsersTest do
 
       :ok = Users.start_password_reset(user.email)
 
-      assert_email_delivered_with(to: [nil: "user@example.com"])
+      assert_email_sent(fn email ->
+        email.to == [{_, "user@example.com"}]
+      end)
     end
   end
 end

@@ -1,5 +1,5 @@
 defmodule Web.API.StagedChangeView do
-  use Web, :view
+  use Web, :html
 
   def render("index.json", %{staged_changes: staged_changes}) do
     %{

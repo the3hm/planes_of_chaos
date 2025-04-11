@@ -8,7 +8,7 @@ defmodule ExVenture.ReleaseTasks do
     :postgrex,
     :ecto,
     :ecto_sql,
-    :bamboo,
+    :swoosh,
     :ranch,
     :phoenix,
     :gettext

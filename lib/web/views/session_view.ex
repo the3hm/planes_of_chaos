@@ -1,5 +1,5 @@
 defmodule Web.SessionView do
-  use Web, :view
+  use Web, :html
 
   alias ExVenture.Config
 end

@@ -1,5 +1,5 @@
 defmodule Web.Admin.StagedChangeView do
-  use Web, :view
+  use Web, :html
 
   alias ExVenture.Rooms.Room
   alias ExVenture.Zones.Zone

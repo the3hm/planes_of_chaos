@@ -1,12 +1,8 @@
-# This file is responsible for configuring your application
-# and its dependencies with the aid of the Mix.Config module.
-#
-# This configuration file is loaded before any dependency and
-# is restricted to this project.
+# config/config.exs
+
+import Config
 
 # General application configuration
-use Mix.Config
-
 config :ex_venture,
   namespace: Web,
   ecto_repos: [ExVenture.Repo]
@@ -26,8 +22,17 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Optional: Porcelain config if you're using it
 config :porcelain, driver: Porcelain.Driver.Basic
 
+# ✅ Swoosh Mailer Configuration (Local for Dev)
+config :ex_venture, ExVenture.Mailer,
+  adapter: Swoosh.Adapters.Local
+
+# ✅ Disable Swoosh API client if not using one
+config :swoosh, :api_client, false
+
+# Import environment specific config (e.g., dev.exs, prod.exs)
 if File.exists?("config/#{Mix.env()}.exs") do
   import_config "#{Mix.env()}.exs"
 end

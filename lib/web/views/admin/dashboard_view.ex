@@ -1,3 +1,3 @@
 defmodule Web.Admin.DashboardView do
-  use Web, :view
+  use Web, :html
 end

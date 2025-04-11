@@ -6,7 +6,7 @@ config :ex_venture, Web.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 
-config :ex_venture, ExVenture.Mailer, adapter: Bamboo.LocalAdapter
+config :ex_venture, ExVenture.Mailer, adapter: Swoosh.Adapters.SMTP
 
 config :logger, level: :info
 
