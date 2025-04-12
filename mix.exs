@@ -7,15 +7,15 @@ defmodule ExVenture.MixProject do
       version: "0.1.0",
       elixir: "~> 1.18.3",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:gettext] ++ Mix.compilers(),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
 
       # Docs
       name: "ExVenture",
-      source_url: "https://github.com/oestrich/ex_venture",
-      homepage_url: "https://exventure.org",
+      source_url: "https://github.com/the3hm/planes_of_chaos",
+      homepage_url: "https://planesofchaos.net",
       docs: [
         main: "readme",
         logo: "assets/static/images/exventure.png",
@@ -43,34 +43,59 @@ defmodule ExVenture.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.7"},
-      {:phoenix_html, "~> 2.11"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_pubsub, "~> 2.0"},
+      # Core Phoenix + HTML + LiveView
+      {:phoenix, "~> 1.7.10"},
       {:phoenix_ecto, "~> 4.6"},
-      {:swoosh, "~> 1.18"},
-      # For SMTP delivery (optional, use Sendgrid/Postmark if you prefer)
-      {:gen_smtp, "~> 1.2"},
-      {:credo, "~> 1.7", only: [:dev, :test]},
-      {:ecto_sql, "~> 3.12"},
-      {:elias, "~> 0.2"},
-      {:ex_doc, "~> 0.31", only: :dev, runtime: false},
-      {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
-      {:ranch, "~> 2.2", override: true},
-      {:kalevala, git: "https://github.com/the3hm/kalevala.git", branch: "main", override: true},
-      {:logster, "~> 1.0"},
-      {:plug, "~> 1.14"},
-      {:plug_cowboy, "~> 2.6"},
-      {:porcelain, "~> 2.0"},
-      {:postgrex, ">= 0.0.0"},
+      {:phoenix_html, "~> 4.1"},
+      {:phoenix_live_dashboard, "~> 0.8.6"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_view, "~> 1.0"},
+      {:phoenix_pubsub, "~> 2.0"},
+
+      # UI & Styling
+      {:backpex, "~> 0.12.0"},
+      {:fluxon, "~> 1.0.10", repo: :fluxon},
+      {:tailwind, "~> 0.3.1"},
+
+      # Storage & Uploads
       {:stein, "~> 0.5"},
       {:stein_storage, git: "https://github.com/smartlogic/stein_storage.git", branch: "main"},
+
+      # Database & Ecto
+      {:ecto_sql, "~> 3.12"},
+      {:postgrex, ">= 0.0.0"},
+
+      # Mailer
+      {:swoosh, "~> 1.18"},
+      {:gen_smtp, "~> 1.2"},
+
+      # Instrumentation
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
-      {:vapor, "~> 0.10.0"}
+
+      # HTTP / Server
+      {:plug, "~> 1.14"},
+      {:plug_cowboy, "~> 2.6"},
+      {:ranch, "~> 2.2", override: true},
+
+      # Misc Utilities
+      {:elias, "~> 0.2"},
+      {:gettext, "~> 0.11"},
+      {:jason, "~> 1.4"},
+      {:logster, "~> 1.0"},
+      {:porcelain, "~> 2.0"},
+      {:uuid, "~> 1.1"},
+      {:vapor, "~> 0.10.0"},
+
+      # Kalevala MUD Engine
+      {:kalevala, git: "https://github.com/the3hm/kalevala.git", branch: "main", override: true},
+
+      # Dev/Test Tools
+      {:credo, "~> 1.7", only: [:dev, :test]},
+      {:ex_doc, "~> 0.31", only: :dev, runtime: false}
     ]
   end
+
 
   # Aliases are shortcuts or tasks specific to the current project.
   # For example, to create, migrate and run the seeds file at once:
