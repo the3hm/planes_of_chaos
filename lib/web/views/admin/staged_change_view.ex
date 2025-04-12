@@ -5,53 +5,92 @@ defmodule Web.Admin.StagedChangeView do
 
   use Phoenix.Component
 
+  import Phoenix.Component
   import Web.Gettext
   import Web.VerifiedRoutes
 
-  import Phoenix.HTML.Tag, only: [content_tag: 2, content_tag: 3]
-  import Phoenix.HTML.Link, only: [link: 2]
-  import Phoenix.Component
-
   alias Web.Router.Helpers, as: Routes
-
   alias ExVenture.Rooms.Room
   alias ExVenture.Zones.Zone
 
-  @doc "Renders a section header for Room staged changes"
-  def schema_header(%Room{}) do
-    content_tag(:div, "Rooms", class: "text-center text-lg font-bold")
+  @doc """
+  Renders a section header for Room staged changes.
+
+  ## Example
+
+      <.schema_header struct={%Room{}} />
+  """
+  attr :struct, :map, required: true
+
+  def schema_header(%{struct: %Room{}} = assigns) do
+    ~H"""
+    <div class="text-center text-lg font-bold">Rooms</div>
+    """
   end
 
-  @doc "Renders a section header for Zone staged changes"
-  def schema_header(%Zone{}) do
-    content_tag(:div, "Zones", class: "text-center text-lg font-bold")
+  def schema_header(%{struct: %Zone{}} = assigns) do
+    ~H"""
+    <div class="text-center text-lg font-bold">Zones</div>
+    """
   end
 
-  @doc "Generates a link to view a Room struct"
-  def struct_link(conn, %Room{} = room) do
-    link(room.name, to: Routes.admin_room_path(conn, :show, room.id))
+  @doc """
+  Renders a link to a Room or Zone struct.
+
+  ## Example
+
+      <.struct_link conn={@conn} struct={%Room{}} />
+  """
+  attr :conn, :any, required: true
+  attr :struct, :map, required: true
+
+  def struct_link(%{conn: conn, struct: %Room{} = room} = assigns) do
+    ~H"""
+    <a href={Routes.admin_room_path(conn, :show, room.id)} class="text-blue-500 hover:underline">
+      <%= room.name %>
+    </a>
+    """
   end
 
-  @doc "Generates a link to view a Zone struct"
-  def struct_link(conn, %Zone{} = zone) do
-    link(zone.name, to: Routes.admin_zone_path(conn, :show, zone.id))
+  def struct_link(%{conn: conn, struct: %Zone{} = zone} = assigns) do
+    ~H"""
+    <a href={Routes.admin_zone_path(conn, :show, zone.id)} class="text-blue-500 hover:underline">
+      <%= zone.name %>
+    </a>
+    """
   end
 
-  @doc "Link to delete a staged change for a Room"
-  def delete_staged_change_link(conn, %{struct: %Room{}} = staged_change) do
-    link("Delete",
-      to: Routes.admin_staged_change_path(conn, :delete, staged_change.id, type: "room"),
-      method: :delete,
-      class: "text-xs btn-secondary"
-    )
+  @doc """
+  Delete link for a staged change.
+
+  ## Example
+
+      <.delete_staged_change_link conn={@conn} staged_change={@staged_change} />
+  """
+  attr :conn, :any, required: true
+  attr :staged_change, :map, required: true
+
+  def delete_staged_change_link(%{conn: conn, staged_change: %{id: id, struct: %Room{}}} = assigns) do
+    ~H"""
+    <.link
+      navigate={Routes.admin_staged_change_path(conn, :delete, id, type: "room")}
+      method={:delete}
+      class="text-xs btn-secondary"
+    >
+      Delete
+    </.link>
+    """
   end
 
-  @doc "Link to delete a staged change for a Zone"
-  def delete_staged_change_link(conn, %{struct: %Zone{}} = staged_change) do
-    link("Delete",
-      to: Routes.admin_staged_change_path(conn, :delete, staged_change.id, type: "zone"),
-      method: :delete,
-      class: "text-xs btn-secondary"
-    )
+  def delete_staged_change_link(%{conn: conn, staged_change: %{id: id, struct: %Zone{}}} = assigns) do
+    ~H"""
+    <.link
+      navigate={Routes.admin_staged_change_path(conn, :delete, id, type: "zone")}
+      method={:delete}
+      class="text-xs btn-secondary"
+    >
+      Delete
+    </.link>
+    """
   end
 end

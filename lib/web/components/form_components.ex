@@ -9,14 +9,14 @@ defmodule Web.FormComponents do
 
   use Phoenix.Component
 
-  import Phoenix.HTML.Tag
-  import Phoenix.HTML.Safe
+  import Phoenix.Component
   import Web.Gettext
   import Web.ErrorComponents, only: [error_tag: 1]
 
   alias Phoenix.HTML.Form
   alias Phoenix.Naming
 
+  # Shared attributes for all input types
   attr :form, :any, required: true
   attr :field, :atom, required: true
   attr :label, :string, default: nil
@@ -80,9 +80,11 @@ defmodule Web.FormComponents do
     """
   end
 
+  # Returns the proper class for an input group based on form errors
   defp form_group_class(form, field) do
     if Keyword.has_key?(form.errors, field), do: "input-group error", else: "input-group"
   end
 
+  # Converts snake_case field names to human-readable strings
   defp humanize(field), do: Naming.humanize(field)
 end

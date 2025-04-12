@@ -3,8 +3,8 @@ defmodule Web.EmailView do
   Renders email templates for transactional messages.
   """
 
-  import Phoenix.HTML
-  import Phoenix.HTML.Tag
-  import Phoenix.HTML.Form
+  use Phoenix.Component
+
+  import Phoenix.Component
   import Web.Gettext
 end

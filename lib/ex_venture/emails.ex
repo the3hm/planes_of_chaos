@@ -5,11 +5,10 @@ defmodule ExVenture.Emails do
   import Web.Gettext, only: [gettext: 1]
 
   alias ExVenture.Mailer
-  alias Web.Endpoint
-  alias Web.Router.Helpers, as: Routes
+  alias Web.EmailPaths
 
   def welcome_email(user) do
-    confirm_url = Endpoint.url() <> Routes.confirmation_path(Endpoint, :confirm, user.email_verification_token)
+    confirm_url = EmailPaths.confirm_url(user.email_verification_token)
 
     new()
     |> to(user.email)
@@ -20,7 +19,7 @@ defmodule ExVenture.Emails do
   end
 
   def verify_email(user) do
-    confirm_url = Endpoint.url() <> Routes.confirmation_path(Endpoint, :confirm, user.email_verification_token)
+    confirm_url = EmailPaths.confirm_url(user.email_verification_token)
 
     new()
     |> to(user.email)
@@ -31,7 +30,7 @@ defmodule ExVenture.Emails do
   end
 
   def password_reset(user) do
-    reset_url = Endpoint.url() <> Routes.registration_reset_path(Endpoint, :edit, user.password_reset_token)
+    reset_url = EmailPaths.reset_url(user.password_reset_token)
 
     new()
     |> to(user.email)

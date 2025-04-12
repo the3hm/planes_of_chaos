@@ -84,7 +84,7 @@ defmodule ExVenture.MixProject do
       {:jason, "~> 1.4"},
       {:logster, "~> 1.0"},
       {:porcelain, "~> 2.0"},
-      {:uuid, "~> 1.1"},
+      {:elixir_uuid, "~> 1.2"},
       {:vapor, "~> 0.10.0"},
 
       # Kalevala MUD Engine

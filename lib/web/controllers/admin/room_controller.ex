@@ -4,6 +4,7 @@ defmodule Web.Admin.RoomController do
   alias ExVenture.Rooms
   alias ExVenture.StagedChanges
   alias ExVenture.Zones
+  alias Web.Router.Helpers, as: Routes
 
   plug(Web.Plugs.ActiveTab, tab: :rooms)
   plug(Web.Plugs.FetchPage when action in [:index])

@@ -8,24 +8,28 @@ defmodule Web.ReactView do
 
   use Phoenix.Component
 
-  import Phoenix.HTML.Tag, only: [content_tag: 3]
+  import Phoenix.Component
   import Web.Gettext
   alias Web.Router.Helpers, as: Routes
 
   @doc """
   Renders a div with `data-react-class` and `data-react-props` attributes.
 
-  ## Examples
+  ## Example
 
-      <%= react_component("UserProfile", %{user_id: 1}) %>
+      <.react_component name="UserProfile" props={%{user_id: 1}} />
   """
-  def react_component(name, props, opts \\ []) do
-    props = Jason.encode!(Map.new(props))
-    data = Keyword.get(opts, :data, [])
-    data = Keyword.merge(data, react_class: name, react_props: props)
+  attr :name, :string, required: true
+  attr :props, :map, required: true
+  attr :rest, :global, default: %{}
 
-    opts = Keyword.put(opts, :data, data)
-
-    content_tag(:div, "", opts)
+  def react_component(assigns) do
+    ~H"""
+    <div
+      data-react-class={@name}
+      data-react-props={Jason.encode!(@props)}
+      {@rest}
+    />
+    """
   end
 end
