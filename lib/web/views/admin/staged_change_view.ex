@@ -1,5 +1,15 @@
 defmodule Web.Admin.StagedChangeView do
-  use Web, :html
+  @moduledoc """
+  View module for rendering staged change admin pages.
+  """
+
+  use Phoenix.Component
+  use Phoenix.HTML
+
+  import Web.VerifiedRoutes
+  import Web.Gettext
+  import Web.CoreComponents
+  alias Web.Router.Helpers, as: Routes
 
   alias ExVenture.Rooms.Room
   alias ExVenture.Zones.Zone

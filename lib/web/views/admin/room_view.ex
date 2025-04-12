@@ -1,5 +1,15 @@
 defmodule Web.Admin.RoomView do
-  use Web, :html
+  @moduledoc """
+  View module for rendering admin room management pages.
+  """
+
+  use Phoenix.Component
+  use Phoenix.HTML
+
+  import Web.VerifiedRoutes
+  import Web.Gettext
+  import Web.CoreComponents
+  alias Web.Router.Helpers, as: Routes
 
   alias ExVenture.Rooms
   alias Web.FormView

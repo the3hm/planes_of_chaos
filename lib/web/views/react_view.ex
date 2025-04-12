@@ -1,5 +1,9 @@
 defmodule Web.ReactView do
-  use Web, :html
+  use Phoenix.Component
+use Phoenix.HTML
+import Web.Gettext
+import Web.CoreComponents
+alias Web.Router.Helpers, as: Routes
 
   @doc """
   Generate a react component tag

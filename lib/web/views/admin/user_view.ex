@@ -1,5 +1,13 @@
 defmodule Web.Admin.UserView do
-  use Web, :html
+  @moduledoc """
+  View module for rendering user admin pages.
+  """
 
-  alias Web.PaginationView
+  use Phoenix.Component
+  use Phoenix.HTML
+
+  import Web.VerifiedRoutes
+  import Web.Gettext
+  import Web.CoreComponents
+  alias Web.Router.Helpers, as: Routes
 end

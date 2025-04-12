@@ -1,5 +1,9 @@
 defmodule Web.PaginationView do
-  use Web, :html
+  use Phoenix.Component
+use Phoenix.HTML
+import Web.Gettext
+import Web.CoreComponents
+alias Web.Router.Helpers, as: Routes
 
   def paginate(path, pagination) do
     render("paginate.html", path: path, pagination: pagination)

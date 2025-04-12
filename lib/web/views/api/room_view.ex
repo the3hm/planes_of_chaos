@@ -1,5 +1,9 @@
 defmodule Web.API.RoomView do
-  use Web, :html
+  use Phoenix.Component
+use Phoenix.HTML
+import Web.Gettext
+import Web.CoreComponents
+alias Web.Router.Helpers, as: Routes
 
   alias Web.Endpoint
   alias Web.API.Link
