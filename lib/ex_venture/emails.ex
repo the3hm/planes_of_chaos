@@ -42,9 +42,8 @@ defmodule ExVenture.Emails do
   end
 
   defp render_body(email, template, assigns) do
-    html = Phoenix.View.render_to_string(Web.EmailView, template, assigns)
-    text = Phoenix.View.render_to_string(Web.EmailView, template |> String.replace_suffix(".html", ".txt"), assigns)
-
+    html = Phoenix.Template.render_to_string(Web.EmailView, "#{template}.html", assigns)
+    text = Phoenix.Template.render_to_string(Web.EmailView, "#{template}.txt", assigns)
 
     email
     |> html_body(html)

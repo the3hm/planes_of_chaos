@@ -49,7 +49,9 @@ defmodule Web.Router do
 
     post("/register/reset/verify", RegistrationResetController, :update)
 
-    get("/users/confirm", ConfirmationController, :confirm)
+    get("/confirm/:code", ConfirmationController, :confirm, as: :confirmation)
+    get("/reset/:token", RegistrationResetController, :edit, as: :registration_reset)
+
 
     get("/_health", PageController, :health)
   end
