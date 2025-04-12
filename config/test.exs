@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 #
 # If you're looking to update variables, you probably want to:
@@ -6,22 +6,28 @@ use Mix.Config
 # - Add to `ExVenture.Config` for loading through Vapor
 #
 
-# Configure your database
-config :ex_venture, ExVenture.Repo, pool: Ecto.Adapters.SQL.Sandbox
+# Configure your database for test
+config :ex_venture, ExVenture.Repo,
+  pool: Ecto.Adapters.SQL.Sandbox
 
-# We don't run a server during test. If one is required,
-# you can enable the server option below.
+# We don't run a server during test
 config :ex_venture, Web.Endpoint,
   http: [port: 4002],
   server: false
 
-config :ex_venture, ExVenture.Mailer, adapter: Swoosh.Adapters.Test
+# Use test adapter for mailer
+config :ex_venture, ExVenture.Mailer,
+  adapter: Swoosh.Adapters.Test
 
+# Disable listener startup
 config :ex_venture, :listener, start: false
 
-# Print only warnings and errors during test
+# Show only warnings and errors in test logs
 config :logger, level: :warn
 
+# Lower bcrypt complexity for fast tests
 config :bcrypt_elixir, :log_rounds, 4
 
-config :stein_storage, backend: :test
+# Use test storage backend
+config :stein_storage,
+  backend: :test
