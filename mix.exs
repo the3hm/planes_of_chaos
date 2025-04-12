@@ -43,6 +43,11 @@ defmodule ExVenture.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:phoenix, "~> 1.7"},
+      {:phoenix_html, "~> 2.11"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_pubsub, "~> 2.0"},
+      {:phoenix_ecto, "~> 4.6"},
       {:swoosh, "~> 1.18"},
       {:gen_smtp, "~> 1.2"}, # For SMTP delivery (optional, use Sendgrid/Postmark if you prefer)
       {:credo, "~> 1.7", only: [:dev, :test]},
@@ -54,11 +59,6 @@ defmodule ExVenture.MixProject do
       {:ranch, "~> 2.2", override: true},
       {:kalevala, git: "https://github.com/the3hm/kalevala.git", branch: "main", override: true},
       {:logster, "~> 1.0"},
-      {:phoenix, "~> 1.7"},
-      {:phoenix_ecto, "~> 4.6"},
-      {:phoenix_html, "~> 2.11"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_pubsub, "~> 2.0"},
       {:plug, "~> 1.14"},
       {:plug_cowboy, "~> 2.6"},
       {:porcelain, "~> 2.0"},
