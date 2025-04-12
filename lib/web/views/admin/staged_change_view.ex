@@ -1,15 +1,16 @@
 defmodule Web.Admin.StagedChangeView do
   @moduledoc """
-  View module for rendering staged change admin pages.
+  Component helpers for rendering staged change admin pages.
   """
 
-  use Phoenix.View, root: "lib/web/templates", namespace: Web
-
-  use Phoenix.HTML
+  use Phoenix.Component
 
   import Web.Gettext
   import Web.VerifiedRoutes
-  import Web.CoreComponents
+
+  import Phoenix.HTML.Tag, only: [content_tag: 2, content_tag: 3]
+  import Phoenix.HTML.Link, only: [link: 2]
+  import Phoenix.Component
 
   alias Web.Router.Helpers, as: Routes
 
@@ -17,12 +18,14 @@ defmodule Web.Admin.StagedChangeView do
   alias ExVenture.Zones.Zone
 
   @doc "Renders a section header for Room staged changes"
-  def schema_header(%Room{}), do:
+  def schema_header(%Room{}) do
     content_tag(:div, "Rooms", class: "text-center text-lg font-bold")
+  end
 
   @doc "Renders a section header for Zone staged changes"
-  def schema_header(%Zone{}), do:
+  def schema_header(%Zone{}) do
     content_tag(:div, "Zones", class: "text-center text-lg font-bold")
+  end
 
   @doc "Generates a link to view a Room struct"
   def struct_link(conn, %Room{} = room) do

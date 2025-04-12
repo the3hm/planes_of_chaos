@@ -3,19 +3,16 @@ defmodule Web.API.ZoneView do
   JSON rendering logic for API zones.
   """
 
-  use Phoenix.View, root: "lib/web/templates", namespace: Web
-
-  use Phoenix.HTML
   import Web.Gettext
-  import Web.CoreComponents
   alias Web.Router.Helpers, as: Routes
-
   alias Web.Endpoint
   alias Web.API.Link
+  alias Web.API.ZoneView
 
+  @doc "Renders paginated list of zones"
   def render("index.json", %{pagination: pagination, zones: zones}) do
     %{
-      items: render_many(zones, __MODULE__, "show.json"),
+      items: Enum.map(zones, &ZoneView.render("show.json", %{zone: &1})),
       links: [
         %Link{
           rel: :self,
@@ -25,6 +22,7 @@ defmodule Web.API.ZoneView do
     }
   end
 
+  @doc "Renders a single zone object"
   def render("show.json", %{zone: zone}) do
     %{
       name: zone.name,

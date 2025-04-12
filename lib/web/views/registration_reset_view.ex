@@ -3,10 +3,9 @@ defmodule Web.RegistrationResetView do
   Handles rendering for password/registration reset flows.
   """
 
-  use Phoenix.View, root: "lib/web/templates", namespace: Web
+  use Phoenix.Component
 
-  use Phoenix.HTML
   import Web.Gettext
-  import Web.CoreComponents
+  import Web.VerifiedRoutes
   alias Web.Router.Helpers, as: Routes
 end

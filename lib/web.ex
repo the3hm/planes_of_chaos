@@ -1,9 +1,8 @@
 defmodule Web do
   @moduledoc """
-  The entrypoint for defining your web interface, such
-  as controllers, components, channels and so on.
+  Entrypoint for defining your web interface (controllers, components, channels).
 
-  This can be used in your application as:
+  Example usage:
 
       use Web, :controller
       use Web, :html
@@ -22,13 +21,11 @@ defmodule Web do
   def html do
     quote do
       use Phoenix.Component
-      use Phoenix.HTML
 
-      # instead of use Phoenix.VerifiedRoutes directly
+      # Phoenix.VerifiedRoutes provides path helpers as functions
       import Web.VerifiedRoutes
 
       import Web.Gettext
-      import Web.CoreComponents
       alias Web.Router.Helpers, as: Routes
     end
   end
@@ -52,7 +49,7 @@ defmodule Web do
   def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
   @doc """
-  When used, dispatch to the appropriate controller/view/etc.
+  Use with: `use Web, :controller`, `use Web, :html`, etc.
   """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])

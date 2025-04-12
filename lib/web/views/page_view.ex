@@ -1,18 +1,24 @@
 defmodule Web.PageView do
   @moduledoc """
-  View helpers for the main site pages.
+  Page-level helpers for rendering public pages.
   """
 
-  use Phoenix.View, root: "lib/web/templates", namespace: Web
+  use Phoenix.Component
 
-  use Phoenix.HTML
   import Web.Gettext
-  import Web.CoreComponents
+  alias Web.ReactView
   alias Web.Router.Helpers, as: Routes
 
-  alias Web.ReactView
+  @doc """
+  Signs and returns character data for the frontend client.
 
-  @doc "Signs and returns character data for the frontend client"
+  ## Example
+
+      [
+        %{name: "Ahsoka", token: "..."},
+        %{name: "Thrawn", token: "..."}
+      ]
+  """
   def characters_for_client(characters) do
     Enum.map(characters, fn character ->
       %{

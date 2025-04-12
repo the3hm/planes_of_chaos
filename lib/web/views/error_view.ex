@@ -1,17 +1,15 @@
 defmodule Web.ErrorView do
-  import Web.CoreComponents
+  @moduledoc """
+  Renders errors as JSON for API endpoints or HTML fallbacks when templates are used.
+  """
 
-  use Phoenix.HTML
   import Web.Gettext
-  import Web.CoreComponents
+  alias Phoenix.Controller
   alias Web.Router.Helpers, as: Routes
 
-  # If you want to customize a particular status code
-  # for a certain format, you may uncomment below.
-  # def render("500.html", _assigns) do
-  #   "Internal Server Error"
-  # end
-
+  @doc """
+  Renders a JSON error for 404 Not Found.
+  """
   def render("404.json", _assigns) do
     %{
       errors: %{
@@ -20,10 +18,12 @@ defmodule Web.ErrorView do
     }
   end
 
-  # By default, Phoenix returns the status message from
-  # the template name. For example, "404.html" becomes
-  # "Not Found".
+  @doc """
+  Default fallback: converts the template name to a status message.
+
+  For example: "500.html" → "Internal Server Error"
+  """
   def template_not_found(template, _assigns) do
-    Phoenix.Controller.status_message_from_template(template)
+    Controller.status_message_from_template(template)
   end
 end

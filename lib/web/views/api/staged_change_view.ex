@@ -3,17 +3,14 @@ defmodule Web.API.StagedChangeView do
   Renders JSON responses for staged change API endpoints.
   """
 
-  use Phoenix.View, root: "lib/web/templates", namespace: Web
-
-  use Phoenix.HTML
   import Web.Gettext
-  import Web.CoreComponents
   alias Web.Router.Helpers, as: Routes
+  alias Web.API.StagedChangeView
 
   @doc "Renders a list of staged changes"
   def render("index.json", %{staged_changes: staged_changes}) do
     %{
-      items: render_many(staged_changes, __MODULE__, "show.json"),
+      items: Enum.map(staged_changes, &render("show.json", %{staged_change: &1})),
       links: []
     }
   end

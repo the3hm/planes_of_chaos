@@ -1,14 +1,11 @@
 defmodule Web.SessionView do
   @moduledoc """
-  Handles rendering for user login/session pages.
+  Components and helpers for rendering the user session (login) pages.
   """
 
-  use Phoenix.View, root: "lib/web/templates", namespace: Web
+  use Phoenix.Component
 
-  use Phoenix.HTML
   import Web.Gettext
-  import Web.CoreComponents
   alias Web.Router.Helpers, as: Routes
-
   alias ExVenture.Config
 end

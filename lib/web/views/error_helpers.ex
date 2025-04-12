@@ -1,31 +1,35 @@
 defmodule Web.ErrorHelpers do
   @moduledoc """
-  Helper functions for translating and displaying inline form errors.
+  Helper components for rendering and translating inline form errors.
 
-  Uses `Web.Gettext` and works with Phoenix.HTML form inputs to render
-  error messages as `<span class="help-block">` elements.
+  Defines `<.error_tag />` as a reusable HEEx component, and a `translate_error/1`
+  function that uses `Web.Gettext` for error message translation.
   """
 
-  use Phoenix.HTML
+  use Phoenix.Component
 
   @doc """
-  Generates one or more inline tags for the given field's validation errors.
+  Inline error tag component. Renders all errors for a given form field.
 
-  ## Example
+  ## Examples
 
-      <%= error_tag f, :email %>
+      <.error_tag form={f} field={:email} />
   """
-  def error_tag(form, field) do
-    Keyword.get_values(form.errors, field)
-    |> Enum.map(fn error ->
-      content_tag(:span, translate_error(error), class: "help-block")
-    end)
+  attr :form, :any, required: true
+  attr :field, :atom, required: true
+
+  def error_tag(assigns) do
+    ~H"""
+    <%= for error <- Keyword.get_values(@form.errors, @field) do %>
+      <span class="help-block"><%= translate_error(error) %></span>
+    <% end %>
+    """
   end
 
   @doc """
-  Translates a validation error message using `Web.Gettext`.
+  Translates an Ecto validation error message using Gettext.
 
-  Automatically applies pluralization rules if `:count` is included in opts.
+  Automatically uses pluralization if `:count` is present in opts.
   """
   def translate_error({msg, opts}) do
     if count = opts[:count] do

@@ -1,21 +1,19 @@
 defmodule Web.PaginationView do
   @moduledoc """
-  Helper view for rendering pagination partials.
+  Helper functions for pagination rendering and page path generation.
   """
 
-  use Phoenix.View, root: "lib/web/templates", namespace: Web
-
-  use Phoenix.HTML
   import Web.Gettext
-  import Web.CoreComponents
   alias Web.Router.Helpers, as: Routes
 
-  @doc "Renders the pagination template with path and pagination data."
-  def paginate(path, pagination) do
-    render("paginate.html", path: path, pagination: pagination)
-  end
+  @doc """
+  Builds a full page URL with updated `page` param.
 
-  @doc "Builds a full page URL with updated page param."
+  ## Example
+
+      iex> page_path("/articles?page=2", 4)
+      "/articles?page=4"
+  """
   def page_path(path, page) do
     uri = URI.parse(path)
 
@@ -29,7 +27,9 @@ defmodule Web.PaginationView do
     |> URI.to_string()
   end
 
-  @doc "Safely decodes a URI query string into a map."
+  @doc """
+  Safely decodes a URI query string into a map.
+  """
   def decode_query(nil), do: %{}
   def decode_query(query), do: URI.decode_query(query)
 

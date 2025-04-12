@@ -2,19 +2,18 @@ defmodule Web.ReactView do
   @moduledoc """
   View helper for embedding React components via server-side rendered divs.
 
-  Generates divs with data attributes that client-side React code can hydrate.
+  Generates divs with `data-react-class` and `data-react-props` attributes
+  that client-side React code can hydrate.
   """
 
-  use Phoenix.View, root: "lib/web/templates", namespace: Web
+  use Phoenix.Component
 
-  use Phoenix.HTML
+  import Phoenix.HTML.Tag, only: [content_tag: 3]
   import Web.Gettext
-  import Web.CoreComponents
   alias Web.Router.Helpers, as: Routes
 
   @doc """
-  Renders a div with `data-react-class` and `data-react-props` attributes
-  for client-side hydration of a React component.
+  Renders a div with `data-react-class` and `data-react-props` attributes.
 
   ## Examples
 

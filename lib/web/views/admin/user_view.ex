@@ -1,15 +1,12 @@
 defmodule Web.Admin.UserView do
   @moduledoc """
-  View module for rendering user admin pages.
+  Component helpers and route utilities for rendering admin user pages.
   """
 
-  use Phoenix.View, root: "lib/web/templates", namespace: Web
-
-  use Phoenix.HTML
+  use Phoenix.Component
 
   import Web.Gettext
   import Web.VerifiedRoutes
-  import Web.CoreComponents
 
   alias Web.Router.Helpers, as: Routes
 end
