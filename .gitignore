@@ -35,3 +35,21 @@ npm-debug.log
 
 /tmp/
 /uploads/
+
+# Mix
+/_build/
+/deps/
+/erl_crash.dump
+
+# VSCode
+.vscode/
+
+# ElixirLS
+.elixir_ls/
+
+# Dialyzer
+.plt
+.plt.*
+
+# Environment
+.env
