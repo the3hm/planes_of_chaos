@@ -49,7 +49,8 @@ defmodule ExVenture.MixProject do
       {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_ecto, "~> 4.6"},
       {:swoosh, "~> 1.18"},
-      {:gen_smtp, "~> 1.2"}, # For SMTP delivery (optional, use Sendgrid/Postmark if you prefer)
+      # For SMTP delivery (optional, use Sendgrid/Postmark if you prefer)
+      {:gen_smtp, "~> 1.2"},
       {:credo, "~> 1.7", only: [:dev, :test]},
       {:ecto_sql, "~> 3.12"},
       {:elias, "~> 0.2"},

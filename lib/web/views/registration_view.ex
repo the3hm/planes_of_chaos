@@ -1,9 +1,12 @@
 defmodule Web.RegistrationView do
-  use Phoenix.Component
-use Phoenix.HTML
-import Web.Gettext
-import Web.CoreComponents
-alias Web.Router.Helpers, as: Routes
+  @moduledoc """
+  Handles rendering for user registration pages.
+  """
 
-  import Web.Gettext, only: [gettext: 1]
+  use Phoenix.View, root: "lib/web/templates", namespace: Web
+
+  use Phoenix.HTML
+  import Web.Gettext
+  import Web.CoreComponents
+  alias Web.Router.Helpers, as: Routes
 end

@@ -43,7 +43,9 @@ defmodule ExVenture.Emails do
 
   defp render_body(email, template, assigns) do
     html = Web.EmailView.render_to_string(template, assigns)
-    text = Web.EmailView.render_to_string(template |> String.replace_suffix(".html", ".txt"), assigns)
+
+    text =
+      Web.EmailView.render_to_string(template |> String.replace_suffix(".html", ".txt"), assigns)
 
     email
     |> html_body(html)

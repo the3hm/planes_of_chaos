@@ -2,7 +2,6 @@ defmodule Web.RegistrationResetControllerTest do
   use Web.ConnCase
   import Swoosh.TestAssertions
 
-
   alias ExVenture.Users
 
   describe "starting reset" do

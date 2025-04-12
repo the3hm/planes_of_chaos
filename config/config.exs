@@ -26,8 +26,7 @@ config :phoenix, :json_library, Jason
 config :porcelain, driver: Porcelain.Driver.Basic
 
 # ✅ Swoosh Mailer Configuration (Local for Dev)
-config :ex_venture, ExVenture.Mailer,
-  adapter: Swoosh.Adapters.Local
+config :ex_venture, ExVenture.Mailer, adapter: Swoosh.Adapters.Local
 
 # ✅ Disable Swoosh API client if not using one
 config :swoosh, :api_client, false

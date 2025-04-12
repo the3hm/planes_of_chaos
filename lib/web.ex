@@ -24,14 +24,14 @@ defmodule Web do
       use Phoenix.Component
       use Phoenix.HTML
 
-      import Web.VerifiedRoutes  # instead of use Phoenix.VerifiedRoutes directly
+      # instead of use Phoenix.VerifiedRoutes directly
+      import Web.VerifiedRoutes
 
       import Web.Gettext
       import Web.CoreComponents
       alias Web.Router.Helpers, as: Routes
     end
   end
-
 
   def router do
     quote do

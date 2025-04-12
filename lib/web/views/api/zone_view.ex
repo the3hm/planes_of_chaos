@@ -1,9 +1,14 @@
 defmodule Web.API.ZoneView do
-  use Phoenix.Component
-use Phoenix.HTML
-import Web.Gettext
-import Web.CoreComponents
-alias Web.Router.Helpers, as: Routes
+  @moduledoc """
+  JSON rendering logic for API zones.
+  """
+
+  use Phoenix.View, root: "lib/web/templates", namespace: Web
+
+  use Phoenix.HTML
+  import Web.Gettext
+  import Web.CoreComponents
+  alias Web.Router.Helpers, as: Routes
 
   alias Web.Endpoint
   alias Web.API.Link

@@ -35,7 +35,6 @@ defmodule Kantele.World.Room do
     with {:error, _reason} <- Communication.register("rooms:#{room.id}", RoomChannel, options) do
       Logger.warning("Failed to register the room's channel, did the room restart?")
 
-
       :ok
     end
   end

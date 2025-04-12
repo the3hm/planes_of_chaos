@@ -2,7 +2,6 @@ defmodule ExVenture.UsersTest do
   use ExVenture.DataCase
   import Swoosh.TestAssertions
 
-
   alias ExVenture.Users
 
   describe "creating new users" do

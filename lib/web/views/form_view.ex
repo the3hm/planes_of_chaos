@@ -1,26 +1,29 @@
 defmodule Web.FormView do
-  use Phoenix.Component
-use Phoenix.HTML
-import Web.Gettext
-import Web.CoreComponents
-alias Web.Router.Helpers, as: Routes
+  @moduledoc """
+  Form field helpers for building consistent input components.
 
-  @doc """
-  Label helper to optionally override the label text
+  Provides functions like `text_field/3`, `password_field/3`, and `error_tag/2`
+  that integrate with Phoenix forms and Tailwind-style classes.
   """
+  use Phoenix.View, root: "lib/web/templates", namespace: Web
+
+  use Phoenix.HTML
+
+  import Web.Gettext
+  import Web.CoreComponents
+  import Web.ErrorHelpers
+
+  alias Web.Router.Helpers, as: Routes
+
+  @doc "Label helper to optionally override the label text"
   def field_label(form, field, opts) do
     case Keyword.get(opts, :label) do
-      nil ->
-        label(form, field, class: "label")
-
-      text ->
-        label(form, field, text, class: "label")
+      nil -> label(form, field, class: "label")
+      text -> label(form, field, text, class: "label")
     end
   end
 
-  @doc """
-  Generate a text field, styled properly
-  """
+  @doc "Generate a text field, styled properly"
   def text_field(form, field, opts \\ [], dopts \\ []) do
     opts = Keyword.merge(opts, dopts)
     text_opts = Keyword.take(opts, [:type, :value, :autofocus])
@@ -39,9 +42,7 @@ alias Web.Router.Helpers, as: Routes
     end
   end
 
-  @doc """
-  Generate a text field, styled properly
-  """
+  @doc "Generate a password field, styled properly"
   def password_field(form, field, opts \\ [], dopts \\ []) do
     opts = Keyword.merge(opts, dopts)
     text_opts = Keyword.take(opts, [:value, :rows])
@@ -60,9 +61,7 @@ alias Web.Router.Helpers, as: Routes
     end
   end
 
-  @doc """
-  Generate a number field, styled properly
-  """
+  @doc "Generate a number field, styled properly"
   def number_field(form, field, opts \\ [], dopts \\ []) do
     opts = Keyword.merge(opts, dopts)
     number_opts = Keyword.take(opts, [:placeholder, :min, :max])
@@ -81,9 +80,7 @@ alias Web.Router.Helpers, as: Routes
     end
   end
 
-  @doc """
-  Generate a textarea field, styled properly
-  """
+  @doc "Generate a textarea field, styled properly"
   def textarea_field(form, field, opts \\ [], dopts \\ []) do
     opts = Keyword.merge(opts, dopts)
     textarea_opts = Keyword.take(opts, [:value, :rows])
@@ -102,9 +99,7 @@ alias Web.Router.Helpers, as: Routes
     end
   end
 
-  @doc """
-  Generate a select field, styled properly
-  """
+  @doc "Generate a select field, styled properly"
   def select_field(form, field, options, opts \\ [], dopts \\ []) do
     opts = Keyword.merge(opts, dopts)
     select_opts = Keyword.take(opts, [:prompt, :selected])
@@ -123,9 +118,7 @@ alias Web.Router.Helpers, as: Routes
     end
   end
 
-  @doc """
-  Generate a checkbox field, styled properly
-  """
+  @doc "Generate a checkbox field, styled properly"
   def checkbox_field(form, field, opts \\ [], dopts \\ []) do
     opts = Keyword.merge(opts, dopts)
 
@@ -146,12 +139,10 @@ alias Web.Router.Helpers, as: Routes
   end
 
   defp form_group_classes(form, field) do
-    case Keyword.has_key?(form.errors, field) do
-      true ->
-        "input-group error"
-
-      false ->
-        "input-group"
+    if Keyword.get(form.errors, field) do
+      "input-group error"
+    else
+      "input-group"
     end
   end
 end
