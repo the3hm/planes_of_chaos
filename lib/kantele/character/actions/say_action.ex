@@ -1,19 +1,22 @@
 defmodule Kantele.Character.SayAction do
   @moduledoc """
-  Action to speak in a channel (e.g. a room)
+  Action to speak in a channel (e.g. a room).
   """
 
   use Kalevala.Character.Action
 
   @impl true
   def run(conn, params) do
-    publish_message(
-      conn,
-      params["channel_name"],
-      params["text"],
-      [meta: meta(params)],
-      &publish_error/2
-    )
+    _conn =
+      publish_message(
+        conn,
+        params["channel_name"],
+        params["text"],
+        [meta: meta(params)],
+        &publish_error/2
+      )
+
+    :ok
   end
 
   defp meta(params) do

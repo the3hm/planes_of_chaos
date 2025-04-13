@@ -12,7 +12,8 @@ defmodule Web.RegistrationResetController do
 
   alias ExVenture.Users
 
-  plug :put_layout, {Web.Layouts, :session}
+  # ✅ Fix: wrap in a list to satisfy Dialyzer's expected spec
+  plug :put_layout, [{:html, {Web.Layouts, :session}}]
 
   @doc """
   Renders the password reset request form.

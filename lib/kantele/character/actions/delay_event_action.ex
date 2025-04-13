@@ -1,6 +1,6 @@
 defmodule Kantele.Character.DelayEventAction do
   @moduledoc """
-  Delay an event
+  Delay an event by a specified duration with optional randomness.
   """
 
   use Kalevala.Character.Action
@@ -18,6 +18,10 @@ defmodule Kantele.Character.DelayEventAction do
         {String.to_atom(key), value}
       end)
 
-    delay_event(conn, delay, params["topic"], data)
+    # Delay the event, but discard the returned conn
+    _conn = delay_event(conn, delay, params["topic"], data)
+
+    # Return :ok to comply with Kalevala.Action behavior
+    :ok
   end
 end

@@ -13,7 +13,8 @@ defmodule Web.RegistrationController do
 
   alias ExVenture.Users
 
-  plug :put_layout, {Web.Layouts, :session}
+  # ✅ Corrected layout format: must be a list of tuples
+  plug :put_layout, [{:html, {Web.Layouts, :session}}]
 
   @doc """
   Renders the registration form.

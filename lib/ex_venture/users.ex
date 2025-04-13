@@ -224,16 +224,19 @@ defmodule ExVenture.Users do
     Accounts.verify_email(Repo, User, token)
   end
 
-  @doc "Starts the password reset flow and sends the email."
-  def start_password_reset(email) do
-    Stein.Accounts.start_password_reset(Repo, User, email, fn user ->
-      with %Swoosh.Email{} = email <- Emails.password_reset(user),
-           {:ok, _response} <- Mailer.deliver(email) do
-        {:ok, _response} -> {:ok, user}
-        {:error, reason} -> {:error, reason}
-      end
-    end)
-  end
+@doc "Starts the password reset flow and sends the email."
+def start_password_reset(email) do
+  Stein.Accounts.start_password_reset(Repo, User, email, fn user ->
+    with {:ok, email} <- Emails.password_reset(user),
+         {:ok, _response} <- Mailer.deliver(email) do
+      {:ok, user}
+    else
+      {:error, reason} -> {:error, reason}
+    end
+  end)
+end
+
+
 
   @doc """
 Returns a blank changeset for login or session forms.

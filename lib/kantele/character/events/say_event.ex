@@ -1,4 +1,8 @@
 defmodule Kantele.Character.SayEvent do
+  @moduledoc """
+  Handles events related to character speech.
+  """
+
   use Kalevala.Character.Event
 
   alias Kantele.Character.CommandView
@@ -19,9 +23,11 @@ defmodule Kantele.Character.SayEvent do
   def broadcast(conn, event) do
     params = Map.put(event.data, "channel_name", "rooms:#{conn.character.room_id}")
 
-    conn
-    |> SayAction.run(params)
-    |> assign(:prompt, false)
+    # Perform side effect (SayAction), discard return
+    :ok = SayAction.run(conn, params)
+
+    # Return original conn with prompt turned off
+    assign(conn, :prompt, false)
   end
 
   def echo(conn, event) do
@@ -35,12 +41,10 @@ defmodule Kantele.Character.SayEvent do
   end
 
   defp say_view(event) do
-    case event.from_pid == self() do
-      true ->
-        "echo"
-
-      false ->
-        "listen"
+    if event.from_pid == self() do
+      "echo"
+    else
+      "listen"
     end
   end
 

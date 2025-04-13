@@ -1,4 +1,8 @@
 defmodule Kantele.Character.SayCommand do
+  @moduledoc """
+  Command for saying something out loud, either generally or at someone.
+  """
+
   use Kalevala.Character.Command
 
   alias Kantele.Character.SayAction
@@ -12,8 +16,10 @@ defmodule Kantele.Character.SayCommand do
   def run(conn, params) do
     params = Map.put(params, "channel_name", "rooms:#{conn.character.room_id}")
 
-    conn
-    |> SayAction.run(params)
-    |> assign(:prompt, false)
+    # Execute the say action side-effect
+    :ok = SayAction.run(conn, params)
+
+    # Return the original conn with prompt suppressed
+    assign(conn, :prompt, false)
   end
 end

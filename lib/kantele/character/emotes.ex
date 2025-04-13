@@ -18,14 +18,14 @@ defmodule Kantele.Character.Emotes do
     File.read!("data/emotes.ucl")
     |> Elias.parse()
     |> Map.get(:emotes)
-    |> Enum.map(fn {_key, emote} ->
+    |> Enum.each(fn {_key, emote} ->
       %Emote{
         command: emote.command,
         text: emote.text
       }
+      |> (fn emote -> Kalevala.Cache._put(state, emote.command, emote) end).()
     end)
-    |> Enum.map(fn emote ->
-      Kalevala.Cache._put(state, emote.command, emote)
-    end)
+
+    :ok
   end
 end

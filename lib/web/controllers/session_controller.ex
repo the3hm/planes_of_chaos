@@ -17,7 +17,7 @@ defmodule Web.SessionController do
   """
   def new(conn, _params) do
     conn
-    |> put_layout({Web.Layouts, :session})
+    |> put_layout([{:html, {Web.Layouts, :session}}]) # ✅ Fixed: wrap layout in a list
     |> assign(:changeset, Users.change_user_changeset())
     |> render("new.html")
   end

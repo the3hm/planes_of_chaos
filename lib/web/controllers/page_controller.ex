@@ -38,7 +38,7 @@ defmodule Web.PageController do
       characters ->
         conn
         |> assign(:characters, characters)
-        |> put_layout(:simple)
+        |> put_layout([{Web.LayoutView, :simple}])
         |> render("client.html")
     end
   end
