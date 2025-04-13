@@ -1,11 +1,9 @@
 defmodule Kantele.Character.WanderAction do
   @moduledoc """
-  Action to pick a random exit and move.
+  Action to pick a random exit and move
   """
 
   use Kalevala.Character.Action
-
-  import Kalevala.Character.Conn, only: [assign: 3, event: 2]
 
   @impl true
   def run(conn, _data) do

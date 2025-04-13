@@ -212,7 +212,8 @@ defmodule ExVenture.Users do
         {:error, :invalid}
 
       {:ok, user} ->
-        user
+        %User{}
+        |> Ecto.Changeset.change(user)
         |> User.password_changeset(params)
         |> Repo.update()
     end
@@ -226,9 +227,11 @@ defmodule ExVenture.Users do
   @doc "Starts the password reset flow and sends the email."
   def start_password_reset(email) do
     Stein.Accounts.start_password_reset(Repo, User, email, fn user ->
-      user
-      |> Emails.password_reset()
-      |> Mailer.deliver()
+      with %Swoosh.Email{} = email <- Emails.password_reset(user),
+           {:ok, _response} <- Mailer.deliver(email) do
+        {:ok, _response} -> {:ok, user}
+        {:error, reason} -> {:error, reason}
+      end
     end)
   end
 

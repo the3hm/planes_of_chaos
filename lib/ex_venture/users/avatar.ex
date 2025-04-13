@@ -91,24 +91,22 @@ defmodule ExVenture.Users.Avatar do
     end
   end
 
-  @doc """
-  Regenerates the user's avatar thumbnail from the original.
-  """
-  @spec regenerate_avatar(User.t()) :: {:ok, User.t()} | {:error, term()}
-  def regenerate_avatar(user) do
-    case Storage.download(avatar_path(user, "original")) do
-      {:ok, temp_path} ->
-        file = %FileUpload{
-          path: temp_path,
-          extension: ".png",
-          filename: Path.basename(temp_path)
-        }
+@doc """
+Regenerates the user's avatar thumbnail from the original.
+"""
+@spec regenerate_avatar(User.t()) :: {:ok, User.t()} | {:error, term()}
+def regenerate_avatar(user) do
+  case Storage.download(avatar_path(user, "original")) do
+    {:ok, temp_path} ->
+      file = %FileUpload{
+        path: temp_path,
+        extension: ".png",
+        filename: Path.basename(temp_path)
+      }
 
-        generate_avatar_versions(user, file)
+      generate_avatar_versions(user, file)
 
-      error ->
-        Logger.error("Failed to download original avatar: #{inspect(error)}")
-        {:error, {:download_failed, error}}
-    end
   end
+end
+
 end
