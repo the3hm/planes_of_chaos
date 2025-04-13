@@ -5,7 +5,5 @@ defmodule Web.RegistrationView do
 
   use Phoenix.Component
 
-  import Web.Gettext
   import Web.VerifiedRoutes
-  alias Web.Router.Helpers, as: Routes
 end

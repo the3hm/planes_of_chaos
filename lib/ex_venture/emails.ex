@@ -2,7 +2,7 @@ defmodule ExVenture.Emails do
   @moduledoc false
 
   import Swoosh.Email
-  import Web.Gettext, only: [gettext: 1]
+  use Gettext, backend: Web.Gettext
 
   alias ExVenture.Mailer
   alias Web.EmailPaths
@@ -47,6 +47,4 @@ defmodule ExVenture.Emails do
     |> html_body(html)
     |> text_body(text)
   end
-
-
 end

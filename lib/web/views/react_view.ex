@@ -9,8 +9,6 @@ defmodule Web.ReactView do
   use Phoenix.Component
 
   import Phoenix.Component
-  import Web.Gettext
-  alias Web.Router.Helpers, as: Routes
 
   @doc """
   Renders a div with `data-react-class` and `data-react-props` attributes.

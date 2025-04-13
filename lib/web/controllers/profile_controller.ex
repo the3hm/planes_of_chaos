@@ -1,9 +1,21 @@
 defmodule Web.ProfileController do
+  @moduledoc """
+  Handles user profile editing and character listing.
+  """
+
   use Web, :controller
+
+  use Phoenix.VerifiedRoutes,
+    endpoint: Web.Endpoint,
+    router: Web.Router,
+    statics: Web.static_paths()
 
   alias ExVenture.Characters
   alias ExVenture.Users
 
+  @doc """
+  Displays the profile page with all of the user's characters.
+  """
   def show(conn, _params) do
     %{current_user: user} = conn.assigns
 
@@ -13,6 +25,9 @@ defmodule Web.ProfileController do
     |> render("show.html")
   end
 
+  @doc """
+  Renders the profile edit form.
+  """
   def edit(conn, _params) do
     %{current_user: user} = conn.assigns
 
@@ -22,19 +37,23 @@ defmodule Web.ProfileController do
     |> render("edit.html")
   end
 
-  def update(conn, %{"user" => params = %{"current_password" => password}}) do
+  @doc """
+  Updates the user's password if the current password is provided.
+  Otherwise, updates the rest of the profile fields.
+  """
+  def update(conn, %{"user" => %{"current_password" => password} = params}) do
     %{current_user: user} = conn.assigns
 
     case Users.change_password(user, password, params) do
-      {:ok, _user} ->
+      {:ok, _updated_user} ->
         conn
         |> put_flash(:info, "Password updated.")
-        |> redirect(to: Routes.profile_path(conn, :show))
+        |> redirect(to: ~p"/users/#{user.id}/profile")
 
-      {:error, :invalid} ->
+      {:error, _changeset} ->
         conn
         |> put_flash(:error, "Could not update your password.")
-        |> redirect(to: Routes.profile_path(conn, :edit))
+        |> redirect(to: ~p"/users/#{user.id}/profile/edit")
     end
   end
 
@@ -42,16 +61,16 @@ defmodule Web.ProfileController do
     %{current_user: user} = conn.assigns
 
     case Users.update(user, params) do
-      {:ok, _user} ->
+      {:ok, _updated_user} ->
         conn
         |> put_flash(:info, "Profile updated")
-        |> redirect(to: Routes.profile_path(conn, :show))
+        |> redirect(to: ~p"/users/#{user.id}/profile")
 
       {:error, changeset} ->
         conn
         |> assign(:user, user)
         |> assign(:changeset, changeset)
-        |> put_status(422)
+        |> put_status(:unprocessable_entity)
         |> render("edit.html")
     end
   end

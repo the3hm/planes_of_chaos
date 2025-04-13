@@ -232,6 +232,19 @@ defmodule ExVenture.Users do
     end)
   end
 
+  @doc """
+Returns a blank changeset for login or session forms.
+
+## Examples
+
+    iex> ExVenture.Users.change_user_changeset()
+    %Ecto.Changeset{...}
+"""
+def change_user_changeset do
+  User.create_changeset(%User{}, %{})
+end
+
+
   @doc "Performs the actual password reset from a valid token."
   def reset_password(token, params) do
     Stein.Accounts.reset_password(Repo, User, token, params)

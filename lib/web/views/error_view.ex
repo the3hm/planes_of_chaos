@@ -3,9 +3,7 @@ defmodule Web.ErrorView do
   Renders errors as JSON for API endpoints or HTML fallbacks when templates are used.
   """
 
-  import Web.Gettext
   alias Phoenix.Controller
-  alias Web.Router.Helpers, as: Routes
 
   @doc """
   Renders a JSON error for 404 Not Found.

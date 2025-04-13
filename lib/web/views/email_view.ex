@@ -6,7 +6,4 @@ defmodule Web.EmailView do
   use Phoenix.Template,
     root: "lib/web/templates/email",
     pattern: "**/*"
-
-  import Phoenix.HTML
-  import Web.Gettext
 end

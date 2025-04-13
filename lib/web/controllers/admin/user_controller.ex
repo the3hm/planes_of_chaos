@@ -1,6 +1,11 @@
 defmodule Web.Admin.UserController do
   use Web, :controller
 
+  use Phoenix.VerifiedRoutes,
+    endpoint: Web.Endpoint,
+    router: Web.Router,
+    statics: Web.static_paths()
+
   alias ExVenture.Users
 
   plug(Web.Plugs.ActiveTab, tab: :users)
@@ -13,7 +18,7 @@ defmodule Web.Admin.UserController do
     conn
     |> assign(:users, users)
     |> assign(:pagination, pagination)
-    |> assign(:path, Routes.admin_user_path(conn, :index))
+    |> assign(:path, ~p"/admin/users")
     |> render("index.html")
   end
 

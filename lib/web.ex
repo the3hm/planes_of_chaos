@@ -8,15 +8,21 @@ defmodule Web do
       use Web, :html
   """
 
-  def controller do
-    quote do
-      use Phoenix.Controller, formats: [:html, :json], namespace: Web
+def controller do
+  quote do
+    use Phoenix.Controller, formats: [:html, :json], namespace: Web
 
-      import Plug.Conn
-      import Web.Gettext
-      alias Web.Router.Helpers, as: Routes
-    end
+    import Plug.Conn
+    import Web.Gettext
+    alias Web.Router.Helpers, as: Routes
+
+    use Phoenix.VerifiedRoutes,
+      endpoint: Web.Endpoint,
+      router: Web.Router,
+      statics: Web.static_paths()
   end
+end
+
 
   def html do
     quote do

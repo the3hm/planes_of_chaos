@@ -1,13 +1,17 @@
 defmodule Web.Plugs.EnsureAdmin do
   @moduledoc """
-  Verify a user is in the session
+  Plug to ensure the current user has admin privileges.
   """
 
   import Plug.Conn
   import Phoenix.Controller
 
+  use Phoenix.VerifiedRoutes,
+    endpoint: Web.Endpoint,
+    router: Web.Router,
+    statics: Web.static_paths()
+
   alias ExVenture.Users
-  alias Web.Router.Helpers, as: Routes
 
   def init(default), do: default
 
@@ -21,7 +25,7 @@ defmodule Web.Plugs.EnsureAdmin do
       false ->
         conn
         |> put_flash(:error, "You are not an admin.")
-        |> redirect(to: Routes.page_path(conn, :index))
+        |> redirect(to: ~p"/")
         |> halt()
     end
   end

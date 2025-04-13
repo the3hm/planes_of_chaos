@@ -6,7 +6,6 @@ defmodule Web.ProfileView do
   use Phoenix.Component
 
   import Phoenix.Component
-  import Web.Gettext
 
   alias ExVenture.Users.Avatar
 

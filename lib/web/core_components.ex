@@ -6,9 +6,6 @@ defmodule Web.CoreComponents do
 
   use Phoenix.Component
 
-  import Web.Gettext
-  alias Phoenix.LiveView.JS
-
   @doc """
   A basic button component.
 

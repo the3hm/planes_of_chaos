@@ -4,8 +4,4 @@ defmodule Web.SessionView do
   """
 
   use Phoenix.Component
-
-  import Web.Gettext
-  alias Web.Router.Helpers, as: Routes
-  alias ExVenture.Config
 end

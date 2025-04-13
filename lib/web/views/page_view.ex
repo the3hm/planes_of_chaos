@@ -5,10 +5,6 @@ defmodule Web.PageView do
 
   use Phoenix.Component
 
-  import Web.Gettext
-  alias Web.ReactView
-  alias Web.Router.Helpers, as: Routes
-
   @doc """
   Signs and returns character data for the frontend client.
 

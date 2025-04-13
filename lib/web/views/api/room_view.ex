@@ -3,38 +3,41 @@ defmodule Web.API.RoomView do
   Renders JSON responses for API room endpoints.
   """
 
-  import Web.Gettext
-  alias Web.Router.Helpers, as: Routes
-  alias Web.Endpoint
-  alias Web.API.Link
+  use Phoenix.VerifiedRoutes,
+    endpoint: Web.Endpoint,
+    router: Web.Router,
+    statics: Web.static_paths()
 
-  @doc "Renders paginated rooms for a specific zone"
-  def render("index.json", %{pagination: pagination, rooms: rooms, zone: zone}) do
+  defmodule Link do
+    @moduledoc false
+    defstruct [:rel, :href]
+  end
+
+  @doc """
+  Renders JSON responses for:
+
+    * `"index.json"` — A paginated list of rooms with optional zone scoping.
+    * `"show.json"` — A single room with metadata and links.
+  """
+  def render("index.json", assigns) do
+    %{pagination: pagination, rooms: rooms} = assigns
+
     %{
       items: Enum.map(rooms, &render("show.json", %{room: &1})),
       links: [
         %Link{
           rel: :self,
-          href: Routes.api_zone_room_path(Endpoint, :index, zone.id, page: pagination.current)
+          href:
+            if assigns[:zone] do
+              ~p"/api/zones/#{assigns.zone.id}/rooms?page=#{pagination.current}"
+            else
+              ~p"/api/rooms?page=#{pagination.current}"
+            end
         }
       ]
     }
   end
 
-  @doc "Renders paginated list of all rooms"
-  def render("index.json", %{pagination: pagination, rooms: rooms}) do
-    %{
-      items: Enum.map(rooms, &render("show.json", %{room: &1})),
-      links: [
-        %Link{
-          rel: :self,
-          href: Routes.api_room_path(Endpoint, :index, page: pagination.current)
-        }
-      ]
-    }
-  end
-
-  @doc "Renders details for a single room"
   def render("show.json", %{room: room}) do
     %{
       name: room.name,
@@ -43,7 +46,7 @@ defmodule Web.API.RoomView do
       links: [
         %Link{
           rel: :self,
-          href: Routes.api_room_path(Endpoint, :show, room.id)
+          href: ~p"/api/rooms/#{room.id}"
         }
       ]
     }

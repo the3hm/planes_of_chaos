@@ -3,9 +3,6 @@ defmodule Web.PaginationView do
   Helper functions for pagination rendering and page path generation.
   """
 
-  import Web.Gettext
-  alias Web.Router.Helpers, as: Routes
-
   @doc """
   Builds a full page URL with updated `page` param.
 
@@ -46,10 +43,10 @@ defmodule Web.PaginationView do
   @doc "Returns true if there are more than 3 pages before the current page."
   def more_previous?(%{current: current}), do: current > 4
 
-  @doc "Returns an empty list if current page is the last page."
+  @doc "Returns a list of up to 3 page numbers after the current page."
   def next_pagination(%{current: current, total: total}) when current == total, do: []
 
-  @doc "Returns a list of up to 3 page numbers after the current page."
+
   def next_pagination(%{current: current, total: total}) do
     (current + 1)..total
     |> Enum.take(3)

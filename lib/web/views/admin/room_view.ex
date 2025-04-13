@@ -5,10 +5,7 @@ defmodule Web.Admin.RoomView do
 
   use Phoenix.Component
 
-  import Web.Gettext
   import Web.VerifiedRoutes
-  alias Web.FormView
-  alias Web.PaginationView
   alias ExVenture.Rooms
 
   @doc """
