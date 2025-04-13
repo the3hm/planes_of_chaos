@@ -14,6 +14,8 @@ defmodule Kantele.Character.SayAction do
       [meta: meta(params)],
       &publish_error/2
     )
+
+    :ok
   end
 
   defp meta(params) do

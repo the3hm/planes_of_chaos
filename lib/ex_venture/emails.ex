@@ -15,7 +15,6 @@ defmodule ExVenture.Emails do
     |> from({"ExVenture", "no-reply@example.com"})
     |> subject("Welcome to #{gettext("ExVenture")}!")
     |> render_body("welcome", confirm_url: confirm_url)
-    |> Mailer.deliver()
   end
 
   def verify_email(user) do
@@ -41,11 +40,13 @@ defmodule ExVenture.Emails do
   end
 
   defp render_body(email, template, assigns) do
-    html = Phoenix.Template.render_to_string(Web.EmailView, "#{template}.html", assigns)
-    text = Phoenix.Template.render_to_string(Web.EmailView, "#{template}.txt", assigns)
+    html = Phoenix.Template.render_to_string(Web.EmailView, "#{template}.html", "html", assigns)
+    text = Phoenix.Template.render_to_string(Web.EmailView, "#{template}.txt", "text", assigns)
 
     email
     |> html_body(html)
     |> text_body(text)
   end
+
+
 end

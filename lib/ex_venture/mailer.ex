@@ -1,5 +1,3 @@
 defmodule ExVenture.Mailer do
-  @moduledoc false
-
-  use Swoosh.Mailer, otp_app: :ex_venture
+  use Swoosh.Mailer, otp_app: :planes_of_chaos
 end

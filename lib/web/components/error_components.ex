@@ -4,7 +4,6 @@ defmodule Web.ErrorComponents do
   """
 
   use Phoenix.Component
-  import Phoenix.HTML
 
   attr :form, :map, required: true
   attr :field, :atom, required: true

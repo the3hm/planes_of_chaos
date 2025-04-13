@@ -1,39 +1,39 @@
 defmodule Web.FormComponents do
   @moduledoc """
-  Tailwind-styled form inputs as reusable Phoenix function components.
+  FluxonUI-styled reusable form inputs as function components.
 
-  These can be used in HEEx templates like:
+  Use in HEEx like:
 
       <.text_field form={@form} field={:email} label="Email" />
   """
 
   use Phoenix.Component
 
-  import Phoenix.Component
-  import Web.Gettext
   import Web.ErrorComponents, only: [error_tag: 1]
 
   alias Phoenix.HTML.Form
   alias Phoenix.Naming
 
-  # Shared attributes for all input types
-  attr :form, :any, required: true
+  # Shared attributes for all fields
+  attr :form, :map, required: true
   attr :field, :atom, required: true
   attr :label, :string, default: nil
   attr :type, :string, default: "text"
   attr :opts, :global
 
-  @doc "Text field input"
+  @doc "Fluxon-styled text field input"
   def text_field(assigns) do
     ~H"""
     <div class={form_group_class(@form, @field)}>
-      <label class="label" for={Form.input_id(@form, @field)}><%= @label || humanize(@field) %></label>
+      <label for={Form.input_id(@form, @field)} class="label text-sm font-medium text-white">
+        <%= @label || humanize(@field) %>
+      </label>
       <input
         type={@type}
         name={Form.input_name(@form, @field)}
         id={Form.input_id(@form, @field)}
         value={Form.input_value(@form, @field)}
-        class="input"
+        class="input w-full bg-dracula-bg text-white border border-dracula-selection rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-dracula-purple"
         {@opts}
       />
       <.error_tag form={@form} field={@field} />
@@ -41,18 +41,20 @@ defmodule Web.FormComponents do
     """
   end
 
-  attr :rows, :integer, default: 5
+  attr :rows, :integer, default: 4
 
-  @doc "Textarea field input"
+  @doc "Fluxon-styled textarea field"
   def textarea_field(assigns) do
     ~H"""
     <div class={form_group_class(@form, @field)}>
-      <label class="label" for={Form.input_id(@form, @field)}><%= @label || humanize(@field) %></label>
+      <label for={Form.input_id(@form, @field)} class="label text-sm font-medium text-white">
+        <%= @label || humanize(@field) %>
+      </label>
       <textarea
         name={Form.input_name(@form, @field)}
         id={Form.input_id(@form, @field)}
-        class="input"
         rows={@rows}
+        class="input w-full bg-dracula-bg text-white border border-dracula-selection rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-dracula-purple"
         {@opts}
       ><%= Form.input_value(@form, @field) %></textarea>
       <.error_tag form={@form} field={@field} />
@@ -60,19 +62,19 @@ defmodule Web.FormComponents do
     """
   end
 
-  @doc "Checkbox field"
+  @doc "Fluxon-styled checkbox"
   def checkbox_field(assigns) do
     ~H"""
-    <div class="input-group">
-      <label class="label font-bold">
-        <input
-          type="checkbox"
-          name={Form.input_name(@form, @field)}
-          id={Form.input_id(@form, @field)}
-          value="true"
-          class="checkbox"
-          {@opts}
-        />
+    <div class="input-group flex items-center gap-2">
+      <input
+        type="checkbox"
+        name={Form.input_name(@form, @field)}
+        id={Form.input_id(@form, @field)}
+        class="checkbox accent-dracula-purple focus:ring-dracula-purple"
+        value="true"
+        {@opts}
+      />
+      <label for={Form.input_id(@form, @field)} class="text-sm font-medium text-white">
         <%= @label || humanize(@field) %>
       </label>
       <.error_tag form={@form} field={@field} />
@@ -80,11 +82,10 @@ defmodule Web.FormComponents do
     """
   end
 
-  # Returns the proper class for an input group based on form errors
+  # Conditional input group class for error highlighting
   defp form_group_class(form, field) do
-    if Keyword.has_key?(form.errors, field), do: "input-group error", else: "input-group"
+    if Keyword.has_key?(form.errors, field), do: "mb-4 input-group has-error", else: "mb-4 input-group"
   end
 
-  # Converts snake_case field names to human-readable strings
   defp humanize(field), do: Naming.humanize(field)
 end

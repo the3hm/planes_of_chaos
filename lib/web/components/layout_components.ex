@@ -4,10 +4,7 @@ defmodule Web.LayoutComponents do
   """
 
   use Phoenix.Component
-  import Web.Gettext
 
-  alias Web.Router.Helpers, as: Routes
-  alias ExVenture.Users
 
   attr :user, :map, required: true
   attr :tab, :atom, required: true

@@ -2,36 +2,55 @@
 
 import Config
 
-# General application configuration
+# -------------------------------------------------------------
+# General Application Configuration
+# -------------------------------------------------------------
 config :ex_venture,
   namespace: Web,
   ecto_repos: [ExVenture.Repo]
 
 config :ex_venture, :listener, start: true
 
-# Configures the endpoint
+# -------------------------------------------------------------
+# Endpoint Configuration (Phoenix 1.7+)
+# -------------------------------------------------------------
 config :ex_venture, Web.Endpoint,
-  render_errors: [view: Web.ErrorView, accepts: ~w(html json)],
-  pubsub_server: ExVenture.PubSub
+  render_errors: [
+    formats: [html: Web.ErrorHTML, json: Web.ErrorJSON],
+    layout: false
+  ],
+  pubsub_server: ExVenture.PubSub,
+  live_view: [signing_salt: "SECRET_SALT"] # Replace with real salt
 
-# Configures Elixir's Logger
+# -------------------------------------------------------------
+# Logger Configuration
+# -------------------------------------------------------------
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-# Use Jason for JSON parsing in Phoenix
+# -------------------------------------------------------------
+# JSON Parsing
+# -------------------------------------------------------------
 config :phoenix, :json_library, Jason
 
-# Optional: Porcelain config if you're using it
+# -------------------------------------------------------------
+# Optional: Porcelain Shell Execution (Legacy)
+# -------------------------------------------------------------
 config :porcelain, driver: Porcelain.Driver.Basic
 
-# ✅ Swoosh Mailer Configuration (Local for Dev)
-config :ex_venture, ExVenture.Mailer, adapter: Swoosh.Adapters.Local
+# -------------------------------------------------------------
+# Swoosh Mailer Configuration
+# -------------------------------------------------------------
+config :ex_venture, ExVenture.Mailer,
+  adapter: Swoosh.Adapters.Local # Swap to SMTP, Postmark, etc. in prod
 
-# ✅ Disable Swoosh API client if not using one
+# Disable Swoosh API client unless using an API adapter
 config :swoosh, :api_client, false
 
-# Import environment specific config (e.g., dev.exs, prod.exs)
+# -------------------------------------------------------------
+# Import Environment Specific Config
+# -------------------------------------------------------------
 if File.exists?("config/#{Mix.env()}.exs") do
   import_config "#{Mix.env()}.exs"
 end

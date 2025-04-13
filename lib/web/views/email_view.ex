@@ -3,8 +3,10 @@ defmodule Web.EmailView do
   Renders email templates for transactional messages.
   """
 
-  use Phoenix.Component
+  use Phoenix.Template,
+    root: "lib/web/templates/email",
+    pattern: "**/*"
 
-  import Phoenix.Component
+  import Phoenix.HTML
   import Web.Gettext
 end

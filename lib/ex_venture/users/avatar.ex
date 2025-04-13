@@ -69,7 +69,7 @@ defmodule ExVenture.Users.Avatar do
 
     case Images.convert(file, extname: ".png", thumbnail: "200x200") do
       {:ok, temp_path} ->
-        Images.upload(%{path: temp_path}, path)
+        Images.upload(%{path: temp_path, extension: ".png", filename: Path.basename(temp_path)}, path)
         {:ok, user}
 
       {:error, :convert} ->
@@ -84,6 +84,9 @@ defmodule ExVenture.Users.Avatar do
     case Storage.download(avatar_path(user, "original")) do
       {:ok, temp_path} ->
         generate_avatar_versions(user, %{path: temp_path})
+
+      {:error, reason} ->
+        {:error, {:download_failed, reason}}
     end
   end
 end

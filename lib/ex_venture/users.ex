@@ -1,10 +1,9 @@
 defmodule ExVenture.Users.User do
   @moduledoc """
-  User schema
+  User schema.
   """
 
   use Ecto.Schema
-
   import Ecto.Changeset
 
   alias ExVenture.Characters.PlayableCharacter
@@ -12,32 +11,32 @@ defmodule ExVenture.Users.User do
   @type t :: %__MODULE__{}
 
   schema "users" do
-    field(:token, Ecto.UUID)
+    field :token, Ecto.UUID
+    field :role, :string
+    field :username, :string
+    field :email, :string
+    field :password, :string, virtual: true
+    field :password_confirmation, :string, virtual: true
+    field :password_hash, :string
 
-    field(:role, :string)
+    field :email_verification_token, Ecto.UUID
+    field :email_verified_at, :utc_datetime
 
-    field(:username, :string)
-    field(:email, :string)
+    field :password_reset_token, Ecto.UUID
+    field :password_reset_expires_at, :utc_datetime
 
-    field(:password, :string, virtual: true)
-    field(:password_confirmation, :string, virtual: true)
-    field(:password_hash, :string)
+    field :avatar_key, Ecto.UUID
+    field :avatar_extension, :string
 
-    field(:email_verification_token, Ecto.UUID)
-    field(:email_verified_at, :utc_datetime)
-
-    field(:password_reset_token, Ecto.UUID)
-    field(:password_reset_expires_at, :utc_datetime)
-
-    field(:avatar_key, Ecto.UUID)
-    field(:avatar_extension, :string)
-
-    has_many(:playable_characters, PlayableCharacter)
-    has_many(:characters, through: [:playable_characters, :character])
+    has_many :playable_characters, PlayableCharacter
+    has_many :characters, through: [:playable_characters, :character]
 
     timestamps()
   end
 
+  @doc """
+  Changeset for creating a new user.
+  """
   def create_changeset(struct, params) do
     struct
     |> cast(params, [:email, :username, :password, :password_confirmation])
@@ -52,6 +51,9 @@ defmodule ExVenture.Users.User do
     |> unique_constraint(:email, name: :users_lower_email_index)
   end
 
+  @doc """
+  Changeset for updating email.
+  """
   def update_changeset(struct, params) do
     struct
     |> cast(params, [:email])
@@ -60,6 +62,9 @@ defmodule ExVenture.Users.User do
     |> maybe_restart_email_verification()
   end
 
+  @doc """
+  Changeset for updating password.
+  """
   def password_changeset(struct, params) do
     struct
     |> cast(params, [:password, :password_confirmation])
@@ -67,6 +72,9 @@ defmodule ExVenture.Users.User do
     |> Stein.Accounts.hash_password()
   end
 
+  @doc """
+  Changeset for updating avatar fields.
+  """
   def avatar_changeset(struct, key, extension) do
     struct
     |> change()
@@ -75,21 +83,19 @@ defmodule ExVenture.Users.User do
   end
 
   defp maybe_restart_email_verification(changeset) do
-    case is_nil(get_change(changeset, :email)) do
-      true ->
-        changeset
-
-      false ->
-        changeset
-        |> Stein.Accounts.start_email_verification_changeset()
-        |> put_change(:email_verified_at, nil)
+    if get_change(changeset, :email) do
+      changeset
+      |> Stein.Accounts.start_email_verification_changeset()
+      |> put_change(:email_verified_at, nil)
+    else
+      changeset
     end
   end
 end
 
 defmodule ExVenture.Users do
   @moduledoc """
-  Users context
+  Users context module.
   """
 
   import Ecto.Query
@@ -101,21 +107,16 @@ defmodule ExVenture.Users do
   alias ExVenture.Users.User
   alias Stein.Accounts
 
-  @doc """
-  Changeset for a session or registration
-  """
+  @doc "Returns an empty changeset for registration or session form."
   def new(), do: Ecto.Changeset.change(%User{}, %{})
 
-  @doc """
-  Changeset for updating a user
-  """
+  @doc "Returns a changeset for editing an existing user."
   def edit(user), do: Ecto.Changeset.change(user, %{})
 
-  @doc """
-  Check if the user is an admin
-  """
+  @doc "Checks if a user has admin privileges."
   def admin?(user), do: user.role == "admin"
 
+  @doc "Lists all users with pagination support."
   def all(opts \\ []) do
     opts = Enum.into(opts, %{})
 
@@ -124,42 +125,28 @@ defmodule ExVenture.Users do
     |> Repo.paginate(opts[:page], opts[:per])
   end
 
-  @doc """
-  Get a user by id
-  """
+  @doc "Fetch a user by ID."
   def get(id) do
     case Repo.get(User, id) do
-      nil ->
-        {:error, :not_found}
-
-      user ->
-        {:ok, user}
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
     end
   end
 
-  @doc """
-  Find an user by the token
-  """
+  @doc "Fetch a user by token."
   def from_token(token) do
     case Repo.get_by(User, token: token) do
-      nil ->
-        {:error, :not_found}
-
-      user ->
-        {:ok, user}
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
     end
   end
 
-  @doc """
-  Validate the user signing in
-  """
+  @doc "Validates login with email and password."
   def validate_login(email, password) do
     Accounts.validate_login(Repo, User, email, password)
   end
 
-  @doc """
-  Create a new user
-  """
+  @doc "Creates a new user and sends a welcome email."
   def create(params) do
     changeset = User.create_changeset(%User{}, params)
 
@@ -175,7 +162,7 @@ defmodule ExVenture.Users do
       {:ok, %{avatar: user}} ->
         user
         |> Emails.welcome_email()
-        |> Mailer.deliver_later()
+        |> Mailer.deliver()
 
         {:ok, user}
 
@@ -184,9 +171,7 @@ defmodule ExVenture.Users do
     end
   end
 
-  @doc """
-  Update a user's information
-  """
+  @doc "Updates user profile and resends verification if email changed."
   def update(user, params) do
     changeset = User.update_changeset(user, params)
 
@@ -209,22 +194,18 @@ defmodule ExVenture.Users do
   end
 
   defp maybe_verify_email_again(user, changeset) do
-    case is_nil(Ecto.Changeset.get_change(changeset, :email)) do
-      true ->
-        :ok
-
-      false ->
-        user
-        |> Emails.verify_email()
-        |> Mailer.deliver_later()
+    if Ecto.Changeset.get_change(changeset, :email) do
+      user
+      |> case do
+        %Swoosh.Email{} = email -> Mailer.deliver(email)
+        _ -> {:error, :invalid_email}
+      end
+    else
+      :ok
     end
   end
 
-  @doc """
-  Change the user's password
-
-  First validates the password
-  """
+  @doc "Changes the user password after validating the current one."
   def change_password(user, current_password, params) do
     case validate_login(user.email, current_password) do
       {:error, :invalid} ->
@@ -237,27 +218,21 @@ defmodule ExVenture.Users do
     end
   end
 
-  @doc """
-  Confirm an email address
-  """
+  @doc "Verifies the user's email from token."
   def verify_email(token) do
     Accounts.verify_email(Repo, User, token)
   end
 
-  @doc """
-  Start to reset a user's password
-  """
+  @doc "Starts the password reset flow and sends the email."
   def start_password_reset(email) do
     Stein.Accounts.start_password_reset(Repo, User, email, fn user ->
       user
       |> Emails.password_reset()
-      |> Mailer.deliver_later()
+      |> Mailer.deliver()
     end)
   end
 
-  @doc """
-  Reset the user's password based on a valid reset token
-  """
+  @doc "Performs the actual password reset from a valid token."
   def reset_password(token, params) do
     Stein.Accounts.reset_password(Repo, User, token, params)
   end
