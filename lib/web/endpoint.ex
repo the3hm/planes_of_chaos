@@ -81,7 +81,7 @@ defmodule Web.Endpoint do
             {:_,
              [
                {"/socket", Kalevala.Websocket.Handler, websocket_config},
-               {:_, Phoenix.Endpoint.Cowboy2Handler, {Web.Endpoint, []}}
+               {:_, Plug.Cowboy.Handler, {Web.Endpoint, []}}
              ]}
           ]
         ],

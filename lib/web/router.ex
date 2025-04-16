@@ -17,7 +17,7 @@ defmodule Web.Router do
   end
 
   pipeline :admin do
-    plug :put_layout, {Web.LayoutView, "admin.html"}
+    plug :put_layout, [{:html, {Web.Layouts, :admin}}]
     plug Web.Plugs.EnsureAdmin
   end
 

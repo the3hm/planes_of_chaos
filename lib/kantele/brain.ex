@@ -5,6 +5,17 @@ defmodule Kantele.Brain do
 
   @brains_path "data/brains"
 
+  alias Kalevala.Brain
+  alias Kalevala.Brain.Nodes.{
+    NullNode,
+    Sequence,
+    FirstSelector,
+    ConditionalSelector,
+    Condition,
+    StateSet,
+    Action
+  }
+
   @doc """
   Load brain data from the path
 
@@ -12,12 +23,8 @@ defmodule Kantele.Brain do
   """
   def load_all(path \\ @brains_path) do
     File.ls!(path)
-    |> Enum.filter(fn file ->
-      String.ends_with?(file, ".ucl")
-    end)
-    |> Enum.map(fn file ->
-      File.read!(Path.join(path, file))
-    end)
+    |> Enum.filter(&String.ends_with?(&1, ".ucl"))
+    |> Enum.map(&File.read!(Path.join(path, &1)))
     |> Enum.map(&Elias.parse/1)
     |> Enum.flat_map(&merge_data/1)
     |> Enum.into(%{})
@@ -36,45 +43,37 @@ defmodule Kantele.Brain do
   end
 
   def process(brain, brains) when brain != nil do
-    %Kalevala.Brain{
+    %Brain{
       root: parse_node(brain, brains)
     }
   end
 
   def process(_, _brains) do
-    %Kalevala.Brain{
-      root: %Kalevala.Brain.NullNode{}
+    %Brain{
+      root: %NullNode{}
     }
   end
 
-  # This is `brain = brains.town_crier`
+  # Handle "brains.town_crier"
   defp parse_node("brains." <> key_path, brains) do
     parse_node(brains[key_path], brains)
   end
 
-  # A ref `{ ref = brains.town_crier }`
+  # Handle references like %{ref: "brains.town_crier"}
   defp parse_node(%{ref: "brains." <> key_path}, brains) do
     parse_node(brains[key_path], brains)
   end
 
-  # Sequences
-
   defp parse_node(%{type: "sequence", nodes: nodes}, brains) do
-    %Kalevala.Brain.Sequence{
-      nodes: Enum.map(nodes, &parse_node(&1, brains))
-    }
+    %Sequence{nodes: Enum.map(nodes, &parse_node(&1, brains))}
   end
 
   defp parse_node(%{type: "first", nodes: nodes}, brains) do
-    %Kalevala.Brain.FirstSelector{
-      nodes: Enum.map(nodes, &parse_node(&1, brains))
-    }
+    %FirstSelector{nodes: Enum.map(nodes, &parse_node(&1, brains))}
   end
 
   defp parse_node(%{type: "conditional", nodes: nodes}, brains) do
-    %Kalevala.Brain.ConditionalSelector{
-      nodes: Enum.map(nodes, &parse_node(&1, brains))
-    }
+    %ConditionalSelector{nodes: Enum.map(nodes, &parse_node(&1, brains))}
   end
 
   defp parse_node(%{type: "conditions/" <> type} = condition, brains),
@@ -89,7 +88,7 @@ defmodule Kantele.Brain do
   def parse_condition("message-match", %{data: data}, _brains) do
     {:ok, regex} = Regex.compile(data.text, "i")
 
-    %Kalevala.Brain.Condition{
+    %Condition{
       type: Kalevala.Brain.Conditions.MessageMatch,
       data: %{
         interested?: &Kantele.Character.SayEvent.interested?/1,
@@ -102,7 +101,7 @@ defmodule Kantele.Brain do
   def parse_condition("tell-match", %{data: data}, _brains) do
     {:ok, regex} = Regex.compile(data.text, "i")
 
-    %Kalevala.Brain.Condition{
+    %Condition{
       type: Kalevala.Brain.Conditions.MessageMatch,
       data: %{
         interested?: &Kantele.Character.TellEvent.interested?/1,
@@ -113,27 +112,25 @@ defmodule Kantele.Brain do
   end
 
   def parse_condition("state-match", %{data: data}, _brains) do
-    %Kalevala.Brain.Condition{
+    %Condition{
       type: Kalevala.Brain.Conditions.StateMatch,
       data: data
     }
   end
 
   def parse_condition("room-enter", %{data: data}, _brains) do
-    %Kalevala.Brain.Condition{
+    %Condition{
       type: Kalevala.Brain.Conditions.EventMatch,
       data: %{
         self_trigger: data.self_trigger == "true",
         topic: Kalevala.Event.Movement.Notice,
-        data: %{
-          direction: :to
-        }
+        data: %{direction: :to}
       }
     }
   end
 
   def parse_condition("event-match", %{data: data}, _brains) do
-    %Kalevala.Brain.Condition{
+    %Condition{
       type: Kalevala.Brain.Conditions.EventMatch,
       data: %{
         self_trigger: Map.get(data, :self_trigger, "false") == "true",
@@ -147,13 +144,11 @@ defmodule Kantele.Brain do
   Process actions
   """
   def parse_action("state-set", action, _brains) do
-    %Kalevala.Brain.StateSet{
-      data: action.data
-    }
+    %StateSet{data: action.data}
   end
 
   def parse_action("say", action, _brains) do
-    %Kalevala.Brain.Action{
+    %Action{
       type: Kantele.Character.SayAction,
       data: action.data,
       delay: Map.get(action, :delay, 0)
@@ -161,7 +156,7 @@ defmodule Kantele.Brain do
   end
 
   def parse_action("emote", action, _brains) do
-    %Kalevala.Brain.Action{
+    %Action{
       type: Kantele.Character.EmoteAction,
       data: action.data,
       delay: Map.get(action, :delay, 0)
@@ -169,7 +164,7 @@ defmodule Kantele.Brain do
   end
 
   def parse_action("flee", action, _brains) do
-    %Kalevala.Brain.Action{
+    %Action{
       type: Kantele.Character.FleeAction,
       data: %{},
       delay: Map.get(action, :delay, 0)
@@ -177,7 +172,7 @@ defmodule Kantele.Brain do
   end
 
   def parse_action("wander", action, _brains) do
-    %Kalevala.Brain.Action{
+    %Action{
       type: Kantele.Character.WanderAction,
       data: %{},
       delay: Map.get(action, :delay, 0)
@@ -185,7 +180,7 @@ defmodule Kantele.Brain do
   end
 
   def parse_action("delay-event", action, _brains) do
-    %Kalevala.Brain.Action{
+    %Action{
       type: Kantele.Character.DelayEventAction,
       data: action.data,
       delay: Map.get(action, :delay, 0)

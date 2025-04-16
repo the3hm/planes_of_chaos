@@ -49,6 +49,13 @@ config :ex_venture, ExVenture.Mailer,
 config :swoosh, :api_client, false
 
 # -------------------------------------------------------------
+# Tailwind Configuration
+# -------------------------------------------------------------
+# Configure tailwind version to avoid runtime warnings
+config :tailwind, version: "3.3.3"
+
+
+# -------------------------------------------------------------
 # Import Environment Specific Config
 # -------------------------------------------------------------
 if File.exists?("config/#{Mix.env()}.exs") do

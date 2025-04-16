@@ -7,7 +7,7 @@ defmodule ExVenture.MixProject do
       version: "0.1.0",
       elixir: "~> 1.18.3",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
@@ -70,17 +70,18 @@ defmodule ExVenture.MixProject do
       {:gen_smtp, "~> 1.2"},
 
       # Instrumentation
+      {:telemetry, "~> 1.3"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
 
       # HTTP / Server
       {:plug, "~> 1.14"},
-      {:plug_cowboy, "~> 2.6"},
+      {:plug_cowboy, "~> 2.7"},
       {:ranch, "~> 2.2", override: true},
 
       # Misc Utilities
       {:elias, "~> 0.2"},
-      {:gettext, "~> 0.11"},
+      {:gettext, "~> 0.26.2"},
       {:jason, "~> 1.4"},
       {:logster, "~> 1.0"},
       {:porcelain, "~> 2.0"},
@@ -88,7 +89,7 @@ defmodule ExVenture.MixProject do
       {:vapor, "~> 0.10.0"},
 
       # Kalevala MUD Engine
-      {:kalevala, git: "https://github.com/the3hm/kalevala.git", branch: "main", override: true},
+      {:kalevala, path: "../kalevala", override: true},
 
       # Dev/Test Tools
       {:credo, "~> 1.7", only: [:dev, :test]},

@@ -24,17 +24,22 @@ def controller do
 end
 
 
-  def html do
-    quote do
-      use Phoenix.Component
+def html do
+  quote do
+    use Phoenix.Component
 
-      # Phoenix.VerifiedRoutes provides path helpers as functions
-      import Web.VerifiedRoutes
+    use Phoenix.VerifiedRoutes,
+      endpoint: Web.Endpoint,
+      router: Web.Router,
+      statics: Web.static_paths()
 
-      import Web.Gettext
-      alias Web.Router.Helpers, as: Routes
-    end
+    # ✅ Fix this line:
+    use Gettext, backend: Web.Gettext
   end
+end
+
+
+
 
   def router do
     quote do

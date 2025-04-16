@@ -1,7 +1,5 @@
 defmodule Web.Gettext do
-  @moduledoc """
-  Provides gettext-based translation backend for Web.
-  """
+  @moduledoc false
 
-  use Gettext.Backend, otp_app: :ex_venture
+  use Gettext.Backend, otp_app: :planes_of_chaos
 end

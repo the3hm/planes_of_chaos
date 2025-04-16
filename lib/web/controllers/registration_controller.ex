@@ -4,7 +4,6 @@ defmodule Web.RegistrationController do
   """
 
   use Web, :controller
-  use Gettext, backend: Web.Gettext
 
   use Phoenix.VerifiedRoutes,
     endpoint: Web.Endpoint,
@@ -13,26 +12,19 @@ defmodule Web.RegistrationController do
 
   alias ExVenture.Users
 
-  # ✅ Corrected layout format: must be a list of tuples
-  plug :put_layout, [{:html, {Web.Layouts, :session}}]
+  plug :put_layout, html: {Web.Layouts, :session}
 
-  @doc """
-  Renders the registration form.
-  """
   def new(conn, _params) do
     conn
     |> assign(:changeset, Users.new())
     |> render("new.html")
   end
 
-  @doc """
-  Handles user registration form submission.
-  """
   def create(conn, %{"user" => params}) do
     case Users.create(params) do
       {:ok, user} ->
         conn
-        |> put_flash(:info, "Welcome to #{gettext("ExVenture")}!")
+        |> put_flash(:info, "Welcome to #{Gettext.gettext(Web.Gettext, "ExVenture")}!")
         |> put_session(:user_token, user.token)
         |> redirect(to: ~p"/")
 
@@ -44,4 +36,5 @@ defmodule Web.RegistrationController do
         |> render("new.html")
     end
   end
+
 end

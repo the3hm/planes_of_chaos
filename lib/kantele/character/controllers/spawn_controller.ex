@@ -39,10 +39,19 @@ defmodule Kantele.Character.SpawnController do
   def display(conn, _text), do: conn
 
   defp register_and_subscribe_character_channel(conn, character) do
+    channel_name = "characters:#{character.id}"
     options = [character_id: character.id]
-    :ok = Communication.register("characters:#{character.id}", CharacterChannel, options)
 
-    options = [character: character]
-    subscribe(conn, "characters:#{character.id}", options, &TellEvent.subscribe_error/2)
+    case Communication.register(channel_name, CharacterChannel, options) do
+      :ok ->
+        :ok
+
+      {:error, :already_registered} ->
+        Logger.warning("[spawn] Character #{character.id} already registered to #{channel_name}, skipping registration.", [])
+        :ok
+    end
+
+    # Subscribe regardless of registration outcome
+    subscribe(conn, channel_name, [character: character], &TellEvent.subscribe_error/2)
   end
 end
