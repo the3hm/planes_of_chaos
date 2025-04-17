@@ -54,6 +54,12 @@ config :swoosh, :api_client, false
 # Configure tailwind version to avoid runtime warnings
 config :tailwind, version: "3.3.3"
 
+# -------------------------------------------------------------
+# Gettext Configuration
+# -------------------------------------------------------------
+config :planes_of_chaos, Web.Gettext,
+  default_locale: "en",
+  locales: ~w(en)
 
 # -------------------------------------------------------------
 # Import Environment Specific Config

@@ -30,10 +30,9 @@ defmodule Web do
   def html do
     quote do
       use Phoenix.Component
-
       import Phoenix.Component
       import Phoenix.HTML
-      import Web.Gettext
+      import Web.Gettext       # <-- this is already there, good
       alias Web.Router.Helpers, as: Routes
 
       use Phoenix.VerifiedRoutes,
@@ -42,6 +41,7 @@ defmodule Web do
         statics: Web.static_paths()
     end
   end
+
 
   # -- LiveView Base -------------------------------------
   def live_view do
@@ -67,6 +67,27 @@ defmodule Web do
       alias Web.Router.Helpers, as: Routes
     end
   end
+
+  # -- Layouts Base --------------------------------------
+  def layouts do
+    quote do
+      use Phoenix.Component
+
+      import Web.Gettext
+      import Phoenix.LiveView.Helpers
+      import Phoenix.Component
+      import Phoenix.VerifiedRoutes
+      import Phoenix.HTML
+
+      use Phoenix.VerifiedRoutes,
+        endpoint: Web.Endpoint,
+        router: Web.Router,
+        statics: Web.static_paths()
+    end
+  end
+
+
+
 
   # -- Router --------------------------------------------
   def router do
