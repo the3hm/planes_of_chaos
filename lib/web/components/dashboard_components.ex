@@ -11,17 +11,16 @@ defmodule Web.DashboardComponents do
   """
 
   use Phoenix.Component
+  use Fluxon.Component
+  use PetalComponents
 
-  import PetalComponents
-  import FluxonUI.Components
+  import PetalComponents.Icon, only: [icon: 1] # ✅ makes `<.icon>` work
 
   alias Phoenix.LiveView.JS
 
   # -- Dashboard Layout Container ----------------------------------------------
 
-  @doc """
-  A layout container with header and content slots for dashboard sections.
-  """
+  @doc "A layout container with header and content slots for dashboard sections."
   slot :header, required: true
   slot :content, required: true
 
@@ -40,9 +39,7 @@ defmodule Web.DashboardComponents do
 
   # -- Statistic Grid Wrapper --------------------------------------------------
 
-  @doc """
-  A responsive grid layout for multiple `<.card>` components.
-  """
+  @doc "A responsive grid layout for multiple `<.card>` components."
   slot :inner_block, required: true
 
   def stat_grid(assigns) do
@@ -55,9 +52,7 @@ defmodule Web.DashboardComponents do
 
   # -- Statistic Card ----------------------------------------------------------
 
-  @doc """
-  A small card for stat blocks on the dashboard grid.
-  """
+  @doc "A small card for stat blocks on the dashboard grid."
   attr :title, :string, required: true
   attr :count, :any, required: true
   attr :icon, :string, required: true
@@ -76,11 +71,7 @@ defmodule Web.DashboardComponents do
 
   # -- Graph Block -------------------------------------------------------------
 
-  @doc """
-  A content box intended to contain graphs or chart visualizations.
-
-  Pass visual content inside as a slot.
-  """
+  @doc "A content box intended to contain graphs or chart visualizations."
   slot :title, required: true
   slot :inner_block, required: true
 
@@ -99,11 +90,7 @@ defmodule Web.DashboardComponents do
 
   # -- Activity Feed -----------------------------------------------------------
 
-  @doc """
-  A vertical list of recent items or log entries.
-
-  Accepts a `:title` and an `:items` list of strings or tuples.
-  """
+  @doc "A vertical list of recent items or log entries."
   attr :title, :string, required: true
   attr :items, :list, default: []
 

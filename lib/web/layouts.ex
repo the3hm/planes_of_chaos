@@ -1,10 +1,12 @@
 defmodule Web.Layouts do
   @moduledoc false
 
-  use Web, :html
+  use Phoenix.Component
 
-  import Web.Gettext         # <- Ensures gettext/1 is seen by .heex compiler
-  import Phoenix.VerifiedRoutes
+  # 👇 This is the real fix that forces the macros in scope
+  use Gettext, backend: Web.Gettext
+
+  import Phoenix.LiveView.Helpers
   import Web.LayoutComponents
 
   use Phoenix.VerifiedRoutes,

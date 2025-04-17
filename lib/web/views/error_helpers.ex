@@ -7,11 +7,12 @@ defmodule Web.ErrorHelpers do
   """
 
   use Phoenix.Component
+  use Gettext, backend: Web.Gettext
 
   @doc """
   Inline error tag component. Renders all errors for a given form field.
 
-  ## Examples
+  ## Example:
 
       <.error_tag form={f} field={:email} />
   """

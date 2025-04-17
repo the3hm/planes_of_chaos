@@ -68,27 +68,6 @@ defmodule Web do
     end
   end
 
-  # -- Layouts Base --------------------------------------
-  def layouts do
-    quote do
-      use Phoenix.Component
-
-      import Web.Gettext
-      import Phoenix.LiveView.Helpers
-      import Phoenix.Component
-      import Phoenix.VerifiedRoutes
-      import Phoenix.HTML
-
-      use Phoenix.VerifiedRoutes,
-        endpoint: Web.Endpoint,
-        router: Web.Router,
-        statics: Web.static_paths()
-    end
-  end
-
-
-
-
   # -- Router --------------------------------------------
   def router do
     quote do

@@ -4,14 +4,18 @@ defmodule Web.LayoutComponents do
   """
 
   use Phoenix.Component
+  use Gettext, backend: Web.Gettext
 
-  # Tab highlighting helper
+  # -- ATTRIBUTES ----------------------------------------
+
   attr :user, :map, required: true
   attr :tab, :atom, required: true
   attr :current_tab, :atom, required: true
 
+  # -- COMPONENTS ----------------------------------------
+
   @doc """
-  Renders a CSS class of "active" if the tab matches.
+  Renders a CSS class of `"active"` if the tab matches the current tab.
   """
   def tab_class(assigns) do
     ~H"""
@@ -24,7 +28,7 @@ defmodule Web.LayoutComponents do
   end
 
   @doc """
-  Renders all favicon + icon tags.
+  Renders favicon and icon tags for browser and devices.
   """
   def icons(assigns) do
     ~H"""
@@ -49,31 +53,30 @@ defmodule Web.LayoutComponents do
   end
 
   @doc """
-Renders open graph and social metadata tags.
-"""
-def social_meta(assigns) do
-  ~H"""
-  <meta property="og:site_name" content={Gettext.gettext(Web.Gettext, "ExVenture")} />
-
-  <%= if assigns[:open_graph_title] do %>
-    <meta property="og:title" content={@open_graph_title} />
-  <% end %>
-
-  <%= if assigns[:open_graph_description] do %>
-    <meta property="og:description" content={@open_graph_description} />
-  <% end %>
-
-  <%= if assigns[:open_graph_url] do %>
-    <meta property="og:url" content={@open_graph_url} />
-  <% end %>
-
-  <meta name="twitter:card" content="summary" />
+  Renders Open Graph and Twitter Card metadata tags.
   """
-end
+  def social_meta(assigns) do
+    ~H"""
+    <meta property="og:site_name" content={gettext("ExVenture")} />
 
+    <%= if assigns[:open_graph_title] do %>
+      <meta property="og:title" content={@open_graph_title} />
+    <% end %>
+
+    <%= if assigns[:open_graph_description] do %>
+      <meta property="og:description" content={@open_graph_description} />
+    <% end %>
+
+    <%= if assigns[:open_graph_url] do %>
+      <meta property="og:url" content={@open_graph_url} />
+    <% end %>
+
+    <meta name="twitter:card" content="summary" />
+    """
+  end
 
   @doc """
-  Returns true if the user is an admin.
+  Returns true if the user is marked as admin.
   """
   def admin?(%{admin: true}), do: true
   def admin?(_), do: false
