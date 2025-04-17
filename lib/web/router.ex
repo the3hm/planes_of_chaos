@@ -3,6 +3,9 @@ defmodule Web.Router do
 
   use Web, :router
 
+  # -------------------------------------------------------------
+  # Pipelines
+  # -------------------------------------------------------------
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -30,7 +33,9 @@ defmodule Web.Router do
     plug Web.Plugs.EnsureProfileOwner
   end
 
-  # Public / guest-accessible routes
+  # -------------------------------------------------------------
+  # Public / Guest Routes
+  # -------------------------------------------------------------
   scope "/", Web do
     pipe_through :browser
 
@@ -54,7 +59,9 @@ defmodule Web.Router do
     get "/_health", PageController, :health
   end
 
-  # Logged-in general routes
+  # -------------------------------------------------------------
+  # Logged-In Routes
+  # -------------------------------------------------------------
   scope "/", Web do
     pipe_through [:browser, :logged_in]
 
@@ -64,7 +71,9 @@ defmodule Web.Router do
     resources "/characters", CharacterController, only: [:create, :delete]
   end
 
-  # Profile routes with :id access restriction
+  # -------------------------------------------------------------
+  # User Profile Routes
+  # -------------------------------------------------------------
   scope "/users/:id", Web do
     pipe_through [:browser, :logged_in, :ensure_profile_owner]
 
@@ -73,32 +82,35 @@ defmodule Web.Router do
     put "/profile", ProfileController, :update
   end
 
-  # Admin panel
-scope "/admin", Web.Admin, as: :admin do
-  pipe_through [:browser, :logged_in, :admin]
+  # -------------------------------------------------------------
+  # Admin Panel + LiveView Dashboard
+  # -------------------------------------------------------------
+  scope "/admin", Web.Admin, as: :admin do
+    pipe_through [:browser, :logged_in, :admin]
 
-  get "/", DashboardController, :index
-  live "/dashboard/live", DashboardLive
+    get "/", DashboardController, :index
+    live "/dashboard/live", DashboardLive
 
-  post "/staged-changes/commit", StagedChangeController, :commit
-  resources "/staged-changes", StagedChangeController, only: [:index, :delete]
+    post "/staged-changes/commit", StagedChangeController, :commit
+    resources "/staged-changes", StagedChangeController, only: [:index, :delete]
 
-  resources "/users", UserController, only: [:index, :show]
+    resources "/users", UserController, only: [:index, :show]
 
-  resources "/rooms", RoomController, only: [:index, :show, :edit, :update]
-  post "/rooms/:id/publish", RoomController, :publish, as: :room
-  delete "/rooms/:id/changes", RoomController, :delete_changes, as: :room_changes
+    resources "/rooms", RoomController, only: [:index, :show, :edit, :update]
+    post "/rooms/:id/publish", RoomController, :publish, as: :room
+    delete "/rooms/:id/changes", RoomController, :delete_changes, as: :room_changes
 
-  resources "/zones", ZoneController, except: [:delete] do
-    resources "/rooms", RoomController, only: [:new, :create]
+    resources "/zones", ZoneController, except: [:delete] do
+      resources "/rooms", RoomController, only: [:new, :create]
+    end
+
+    post "/zones/:id/publish", ZoneController, :publish, as: :zone
+    delete "/zones/:id/changes", ZoneController, :delete_changes, as: :zone_changes
   end
 
-  post "/zones/:id/publish", ZoneController, :publish, as: :zone
-  delete "/zones/:id/changes", ZoneController, :delete_changes, as: :zone_changes
-end
-
-
-  # API routes
+  # -------------------------------------------------------------
+  # API Routes
+  # -------------------------------------------------------------
   scope "/api", Web.API, as: :api do
     pipe_through [:api]
 
@@ -114,6 +126,9 @@ end
     resources "/staged-changes/:type", StagedChangeController, only: [:index]
   end
 
+  # -------------------------------------------------------------
+  # Dev Tools
+  # -------------------------------------------------------------
   if Mix.env() == :dev do
     forward "/dev/mailbox", Plug.Swoosh.MailboxPreview
   end

@@ -1,7 +1,16 @@
 defmodule Web.DashboardLive do
+  @moduledoc """
+  LiveView admin dashboard, showing real-time status cards.
+
+  Uses `Web.DashboardComponents` to display:
+  - Online player count
+  - Zone count
+  - Room count
+  """
+
   use Web, :live_view
 
-  alias Web.DashboardComponents
+  import Web.DashboardComponents
 
   @impl true
   def mount(_params, _session, socket) do
@@ -15,7 +24,7 @@ defmodule Web.DashboardLive do
       <:header>
         <div class="flex justify-between items-center">
           <h1 class="text-2xl font-bold">Dashboard</h1>
-          <.button>New Action</.button>
+          <.button icon="plus">New Action</.button>
         </div>
       </:header>
 
