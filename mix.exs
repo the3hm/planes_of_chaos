@@ -56,6 +56,13 @@ defmodule ExVenture.MixProject do
       {:backpex, "~> 0.12.0"},
       {:fluxon, "~> 1.0.10", repo: :fluxon},
       {:tailwind, "~> 0.3.1"},
+      {:heroicons,
+      github: "tailwindlabs/heroicons",
+      tag: "v2.1.5",
+      app: false,
+      compile: false,
+      sparse: "optimized"},
+      {:petal_components, "~> 3.0"},
 
       # Storage & Uploads
       {:stein, "~> 0.5"},
