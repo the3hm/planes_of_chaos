@@ -10,7 +10,9 @@ defmodule Web.DashboardLive do
 
   use Web, :live_view
 
+  import PetalComponents.Button
   import Web.DashboardComponents
+
 
   @impl true
   def mount(_params, _session, socket) do
