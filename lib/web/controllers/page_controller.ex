@@ -8,13 +8,13 @@ defmodule Web.PageController do
   alias ExVenture.Characters
 
   @doc """
-  Renders the homepage.
-  """
-  def index(conn, _params) do
-    render(conn, "index.html")
-  end
+   Renders the homepage.
+   """
+   def index(conn, _params) do
+     render(conn, "index.html")
+   end
 
-  @doc """
+   @doc """
   Returns a basic health check response.
   """
   def health(conn, _params) do
