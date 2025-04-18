@@ -28,7 +28,7 @@ config :ex_venture, Web.Endpoint,
       "build:css:watch",
       cd: Path.expand("../assets", __DIR__)
     ],
-    "assets/yarn.sh": [
+    yarn: [
       "run",
       "build:static:watch",
       cd: Path.expand("../assets", __DIR__)
