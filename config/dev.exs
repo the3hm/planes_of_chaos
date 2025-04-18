@@ -1,70 +1,66 @@
 import Config
 
-#
-# If you're looking to update variables, you probably want to:
-# - Edit `.env`
-# - Add to `ExVenture.Config` for loading through Vapor
-#
+# -------------------------------------------------------------------
+# Database Configuration
+# -------------------------------------------------------------------
 
-# Configure your database
-config :ex_venture, ExVenture.Repo, show_sensitive_data_on_connection_error: true
+config :ex_venture, ExVenture.Repo,
+  show_sensitive_data_on_connection_error: true
 
-# For development, we disable any cache and enable
-# debugging and code reloading.
-#
-# The watchers configuration can be used to run external
-# watchers to your application. For example, we use it
-# with webpack to recompile .js and .css sources.
+# -------------------------------------------------------------------
+# Endpoint Configuration
+# -------------------------------------------------------------------
+
 config :ex_venture, Web.Endpoint,
   server: true,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    node: [
-      "./node_modules/.bin/yarn",
-      "run",
-      "build:js:watch",
+    js: {
+      :node,
+      ["./assets/yarn.sh", "run", "build:js:watch"],
       cd: Path.expand("../assets", __DIR__)
-    ],
-    node: [
-      "./node_modules/.bin/yarn",
-      "run",
-      "build:css:watch",
+    },
+    css: {
+      :node,
+      ["./assets/yarn.sh", "run", "build:css:watch"],
       cd: Path.expand("../assets", __DIR__)
-    ],
-    node: [
-      "./node_modules/.bin/yarn",
-      "run",
-      "build:static:watch",
+    },
+    static: {
+      :node,
+      ["./assets/yarn.sh", "run", "build:static:watch"],
       cd: Path.expand("../assets", __DIR__)
-    ]
+    }
   ]
 
-# Watch static and templates for browser reloading.
-config :ex_venture, Web.Endpoint,
-  live_reload: [
-    patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
-      ~r"priv/gettext/.*(po)$",
-      ~r"lib/web/{live,views}/.*(ex)$",
-      ~r"lib/web/templates/.*(eex)$"
-    ]
-  ]
 
-config :ex_venture, ExVenture.Mailer, adapter: Swoosh.Adapters.SMTP
+# -------------------------------------------------------------------
+# Mailer (Swoosh)
+# -------------------------------------------------------------------
 
-# Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
+config :ex_venture, ExVenture.Mailer,
+  adapter: Swoosh.Adapters.SMTP
 
-# Set a higher stacktrace during development. Avoid configuring such
-# in production as building large stacktraces may be expensive.
-config :phoenix, :stacktrace_depth, 20
+# -------------------------------------------------------------------
+# Logger
+# -------------------------------------------------------------------
 
-# Initialize plugs at runtime for faster development compilation
-config :phoenix, :plug_init_mode, :runtime
+config :logger, :console,
+  format: "[$level] $message\n"
 
-config :phoenix, :logger, false
+# -------------------------------------------------------------------
+# Phoenix Development Options
+# -------------------------------------------------------------------
+
+config :phoenix,
+  stacktrace_depth: 20,
+  plug_init_mode: :runtime,
+  logger: false
+
+# -------------------------------------------------------------------
+# Local Uploads
+# -------------------------------------------------------------------
 
 config :stein_storage,
   backend: :file,
