@@ -51,6 +51,7 @@ defmodule ExVenture.MixProject do
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.0"},
       {:phoenix_pubsub, "~> 2.0"},
+      {:phoenix_view, "~> 2.0"}, # Added for EEx rendering via controllers
 
       # UI & Styling
       {:backpex, "~> 0.12.0"},

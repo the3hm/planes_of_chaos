@@ -3,7 +3,7 @@ defmodule Web.PageView do
    Page-level helpers for rendering public pages.
    """
 
-  use Phoenix.Component
+  use Phoenix.View, root: "lib/web/templates"
 
   @doc """
   Signs and returns character data for the frontend client.
