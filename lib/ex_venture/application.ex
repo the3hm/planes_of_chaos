@@ -11,6 +11,7 @@ defmodule ExVenture.Application do
       ExVenture.Config.Cache,
       ExVenture.Repo,
       ExVenture.Application.KalevalaSupervisor,
+      # Start the Endpoint (http/https)
       Web.Endpoint
     ]
 
@@ -48,7 +49,7 @@ defmodule ExVenture.Application.KalevalaSupervisor do
   def init(_args) do
     telnet_config = [
       telnet: [
-        port: 4646
+        port: 4647 # Changed port from 4646
       ],
       protocol: [
         output_processors: [

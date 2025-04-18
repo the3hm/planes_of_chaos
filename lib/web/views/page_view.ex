@@ -1,7 +1,7 @@
 defmodule Web.PageView do
   @moduledoc """
-  Page-level helpers for rendering public pages.
-  """
+   Page-level helpers for rendering public pages.
+   """
 
   use Phoenix.Component
 

@@ -6,7 +6,6 @@ defmodule Web.Layouts do
   # 👇 This is the real fix that forces the macros in scope
   use Gettext, backend: Web.Gettext
 
-  import Phoenix.LiveView.Helpers
   import Web.LayoutComponents
 
   use Phoenix.VerifiedRoutes,

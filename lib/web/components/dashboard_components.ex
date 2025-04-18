@@ -16,8 +16,6 @@ defmodule Web.DashboardComponents do
 
   import PetalComponents.Icon, only: [icon: 1] # ✅ makes `<.icon>` work
 
-  alias Phoenix.LiveView.JS
-
   # -- Dashboard Layout Container ----------------------------------------------
 
   @doc "A layout container with header and content slots for dashboard sections."

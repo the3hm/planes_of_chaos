@@ -57,7 +57,7 @@ config :tailwind, version: "3.3.3"
 # -------------------------------------------------------------
 # Gettext Configuration
 # -------------------------------------------------------------
-config :planes_of_chaos, Web.Gettext,
+config :ex_venture, Web.Gettext,
   default_locale: "en",
   locales: ~w(en)
 

@@ -17,21 +17,22 @@ config :ex_venture, Web.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    js: {
-      :node,
-      ["./assets/yarn.sh", "run", "build:js:watch"],
+    # Use yarn directly as the executable
+    yarn: [
+      "run",
+      "build:js:watch",
       cd: Path.expand("../assets", __DIR__)
-    },
-    css: {
-      :node,
-      ["./assets/yarn.sh", "run", "build:css:watch"],
+    ],
+    yarn: [
+      "run",
+      "build:css:watch",
       cd: Path.expand("../assets", __DIR__)
-    },
-    static: {
-      :node,
-      ["./assets/yarn.sh", "run", "build:static:watch"],
+    ],
+    "assets/yarn.sh": [
+      "run",
+      "build:static:watch",
       cd: Path.expand("../assets", __DIR__)
-    }
+    ]
   ]
 
 
