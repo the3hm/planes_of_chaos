@@ -1,0 +1,25 @@
+<.flash_group flash={@flash} />
+<div class="px-4 py-10 sm:px-6 sm:py-28 lg:px-8 xl:px-28 xl:py-32">
+  <div class="mx-auto max-w-xl lg:mx-0">
+    <h1 class="text-4xl font-bold tracking-tight text-zinc-900 sm:text-6xl">
+      Welcome to ExVenture
+    </h1>
+    <p class="mt-6 text-lg leading-8 text-zinc-600">
+      A modern MUD game written in Elixir
+    </p>
+    <div class="mt-10 flex items-center gap-x-6">
+      <%= if assigns[:current_user] do %>
+        <.link navigate={~p"/client"} class="btn btn-primary">
+          Enter Game
+        </.link>
+      <% else %>
+        <.link href={~p"/sign-in"} class="btn btn-primary">
+          Sign In
+        </.link>
+        <.link href={~p"/register"} class="btn btn-outline">
+          Register
+        </.link>
+      <% end %>
+    </div>
+  </div>
+</div>

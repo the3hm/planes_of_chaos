@@ -1,26 +1,20 @@
 defmodule Web.Admin.UserDetailLive do
   use Web.LiveViewBase
 
-  # Note: This file originally had `import Petal.Components` here,
-  # which is now handled by `use Web, :live_view` via `Web.ComponentHelpers`
-  # if Step 5 is done correctly.
-
   alias ExVenture.Users
   alias ExVenture.Characters
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
-    case Users.get_user(id) do
-      {:ok, user} ->
-        characters = Characters.list_by_user(user)
-        {:ok,
-         socket
-         |> assign(:page_title, "User Details - #{user.username}")
-         |> assign(:user, user)
-         |> assign(:characters, characters)
-         |> assign(:show_modal, false)}
-
-      {:error, _} ->
+    with {:ok, user} <- Users.get(id),
+         {:ok, characters} <- Characters.user_characters(user.id) do
+      {:ok,
+       socket
+       |> assign(:page_title, "User Details")
+       |> assign(:user, user)
+       |> assign(:characters, characters)}
+    else
+      {:error, :not_found} ->
         {:ok,
          socket
          |> put_flash(:error, "User not found")
@@ -29,152 +23,119 @@ defmodule Web.Admin.UserDetailLive do
   end
 
   @impl true
-  def handle_event("toggle_admin", _params, socket) do
-    case Users.toggle_admin(socket.assigns.user) do
-      {:ok, updated_user} ->
-        {:noreply,
-         socket
-         |> assign(:user, updated_user)
-         |> put_flash(:info, "User admin status updated successfully")}
+  def render(assigns) do
+    ~H"""
+    <div class="space-y-6">
+      <%# User Profile Info Card %>
+      <div class="bg-white shadow rounded-lg p-6">
+        <div class="flex justify-between items-start">
+          <div class="flex items-center">
+            <.icon name="hero-user-circle" class="w-6 h-6 mr-2 text-dracula-purple" />
+            <h2 class="text-2xl font-semibold"><%= @user.username %></h2>
+          </div>
+          <div class="flex space-x-2">
+            <.button label="Edit" phx-click="edit_user" phx-value-id={@user.id} class="btn btn-secondary">
+              <.icon name="hero-pencil" class="w-4 h-4 mr-1" /> Edit
+            </.button>
+            <.button label={if @user.banned_at, do: "Unban", else: "Ban"} phx-click="toggle_ban" phx-value-id={@user.id} class={if @user.banned_at, do: "btn-accent", else: "btn-error"}>
+              <.icon name={if @user.banned_at, do: "hero-lock-open", else: "hero-lock-closed"} class="w-4 h-4 mr-1" />
+              <%= if @user.banned_at, do: "Unban", else: "Ban" %>
+            </.button>
+          </div>
+        </div>
 
-      {:error, _changeset} ->
-        {:noreply, put_flash(socket, :error, "Failed to update user admin status")}
-    end
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-sm font-medium text-gray-500">Email</h3>
+            <p class="mt-1 text-sm text-gray-900"><%= @user.email %></p>
+          </div>
+          <div>
+            <h3 class="text-sm font-medium text-gray-500">Username</h3>
+            <p class="mt-1 text-sm text-gray-900"><%= @user.username %></p>
+          </div>
+          <div>
+            <h3 class="text-sm font-medium text-gray-500">Status</h3>
+            <div class="mt-1">
+              <span class={"badge #{if @user.is_admin, do: "badge-success", else: "badge-secondary"}"}>
+                <%= if @user.is_admin, do: "Admin", else: "User" %>
+              </span>
+              <%= if @user.banned_at do %>
+                <span class="badge badge-error">Banned</span>
+              <% end %>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-sm font-medium text-gray-500">Joined</h3>
+            <p class="mt-1 text-sm text-gray-900"><%= Calendar.strftime(@user.inserted_at, "%B %d, %Y") %></p>
+          </div>
+        </div>
+      </div>
+
+      <%# Characters List Card %>
+      <div class="bg-white shadow rounded-lg p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center">
+            <.icon name="hero-user-group" class="w-6 h-6 mr-2 text-dracula-pink" />
+            <h2 class="text-2xl font-semibold">Characters</h2>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="table w-full">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for char <- @characters do %>
+                <tr>
+                  <td><%= char.name %></td>
+                  <td>
+                    <span class={"badge #{character_status_color(char)}"}>
+                      <%= character_status(char) %>
+                    </span>
+                  </td>
+                  <td><%= Calendar.strftime(char.inserted_at, "%Y-%m-%d") %></td>
+                  <td>
+                    <.link patch={~p"/admin/characters/#{char.id}"} class="btn btn-sm btn-secondary">
+                      <.icon name="hero-pencil" class="w-4 h-4 mr-1" /> View
+                    </.link>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    """
   end
 
   @impl true
-  def handle_event("toggle_ban", _params, socket) do
-    case Users.toggle_ban(socket.assigns.user) do
+  def handle_event("toggle_ban", %{"id" => id}, socket) do
+    user = socket.assigns.user
+
+    case Users.toggle_ban(user) do
       {:ok, updated_user} ->
         {:noreply,
          socket
          |> assign(:user, updated_user)
-         |> put_flash(:info, "User ban status updated successfully")}
+         |> put_flash(:info, "User #{if updated_user.banned_at, do: "banned", else: "unbanned"} successfully")}
 
       {:error, _changeset} ->
         {:noreply, put_flash(socket, :error, "Failed to update user ban status")}
     end
   end
 
-  @impl true
-  def render(assigns) do
-    ~H"""
-    <div class="space-y-6">
-      <!-- User Info Card -->
-      <.ph_card>
-        <:header>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <.ph_icon name="hero-user-circle" class="w-6 h-6 mr-2 text-dracula-purple" />
-              <h3 class="text-lg font-medium text-dracula-foreground">User Information</h3>
-            </div>
-            <div class="flex space-x-3">
-              <.ph_button
-                color={if @user.is_admin, do: "warning", else: "primary"}
-                phx-click="toggle_admin"
-              >
-                <%= if @user.is_admin, do: "Remove Admin", else: "Make Admin" %>
-              </.ph_button>
-              <.ph_button
-                color={if @user.banned_at, do: "success", else: "danger"}
-                phx-click="toggle_ban"
-              >
-                <%= if @user.banned_at, do: "Unban User", else: "Ban User" %>
-              </.ph_button>
-            </div>
-          </div>
-        </:header>
+  defp character_status(%{deleted_at: deleted_at}) when not is_nil(deleted_at), do: "Deleted"
+  defp character_status(%{banned_at: banned_at}) when not is_nil(banned_at), do: "Banned"
+  defp character_status(_), do: "Active"
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-4">
-            <div>
-              <label class="text-sm font-medium text-dracula-comment">Username</label>
-              <p class="mt-1 text-dracula-foreground"><%= @user.username %></p>
-            </div>
-            <div>
-              <label class="text-sm font-medium text-dracula-comment">Email</label>
-              <p class="mt-1 text-dracula-foreground"><%= @user.email %></p>
-            </div>
-            <div>
-              <label class="text-sm font-medium text-dracula-comment">Joined</label>
-              <p class="mt-1 text-dracula-foreground">
-                <%= Calendar.strftime(@user.inserted_at, "%B %d, %Y") %>
-              </p>
-            </div>
-          </div>
-          <div class="space-y-4">
-            <div>
-              <label class="text-sm font-medium text-dracula-comment">Status</label>
-              <div class="mt-1 flex items-center space-x-2">
-                <.ph_badge color={if @user.is_admin, do: "success", else: "secondary"}>
-                  <%= if @user.is_admin, do: "Admin", else: "User" %>
-                </.ph_badge>
-                <%= if @user.banned_at do %>
-                  <.ph_badge color="danger">Banned</.ph_badge>
-                <% end %>
-              </div>
-            </div>
-            <div>
-              <label class="text-sm font-medium text-dracula-comment">Last Login</label>
-              <p class="mt-1 text-dracula-foreground">
-                <%= if @user.last_login_at do %>
-                  <%= Calendar.strftime(@user.last_login_at, "%B %d, %Y at %H:%M") %>
-                <% else %>
-                  Never
-                <% end %>
-              </p>
-            </div>
-          </div>
-        </div>
-      </.ph_card>
-
-      <!-- Characters List -->
-      <.ph_card>
-        <:header>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <.ph_icon name="hero-user-group" class="w-6 h-6 mr-2 text-dracula-pink" />
-              <h3 class="text-lg font-medium text-dracula-foreground">Characters</h3>
-            </div>
-          </div>
-        </:header>
-
-        <.ph_table id="characters-table" rows={@characters}>
-          <:col :let={char} label="Name" class="w-1/4">
-            <%= char.name %>
-          </:col>
-
-          <:col :let={char} label="Class" class="w-1/4">
-            <%= char.class %>
-          </:col>
-
-          <:col :let={char} label="Level" class="w-1/6 text-center">
-            <%= char.level %>
-          </:col>
-
-          <:col :let={char} label="Status" class="w-1/4">
-            <.ph_badge color={character_status_color(char)}>
-              <%= char.status %>
-            </.ph_badge>
-          </:col>
-
-          <:action :let={char}>
-            <.ph_button link_type="live_patch" icon_name="hero-pencil" to={~p"/admin/characters/#{char.id}"}>
-              View
-            </.ph_button>
-          </:action>
-        </.ph_table>
-      </.ph_card>
-    </div>
-    """
-  end
-
-  defp character_status_color(character) do
-    case character.status do
-      "active" -> "success"
-      "inactive" -> "warning"
-      "banned" -> "danger"
-      _ -> "secondary"
-    end
-  end
+  defp character_status_color(%{deleted_at: deleted_at}) when not is_nil(deleted_at), do: "badge-error"
+  defp character_status_color(%{banned_at: banned_at}) when not is_nil(banned_at), do: "badge-warning"
+  defp character_status_color(_), do: "badge-success"
 end

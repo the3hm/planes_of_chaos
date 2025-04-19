@@ -20,7 +20,8 @@ config :ex_venture, Web.Endpoint,
     layout: false
   ],
   pubsub_server: ExVenture.PubSub,
-  live_view: [signing_salt: "SECRET_SALT"] # Replace with real salt
+  live_view: [signing_salt: "HWJk38dKSf2KnM9pYXLP3RWZbtl6FMxE"], # LiveView signing salt
+  secret_key_base: "o6J6LHaC3PD0d3c8mB6qvPPrG4qNJN8FpJrVDKgEP1x0CVU4gXHt6TRCeHGdbrQg"
 
 # -------------------------------------------------------------
 # Logger Configuration
@@ -53,6 +54,11 @@ config :swoosh, :api_client, false
 # -------------------------------------------------------------
 # Configure tailwind version to avoid runtime warnings
 config :tailwind, version: "3.3.3"
+
+# -------------------------------------------------------------
+# ESBuild Configuration
+# -------------------------------------------------------------
+config :esbuild, version: "0.17.11"
 
 # -------------------------------------------------------------
 # Gettext Configuration

@@ -26,20 +26,34 @@ defmodule Web do
     end
   end
 
-
   # -- HTML Components ----------------------------------
   def html do
     quote do
-      # Core imports
-      import Phoenix.HTML
-      import Web.Gettext
+      use Phoenix.Component
 
-      # Components & LiveView
-      use Web.Components.PetalHelpers
-      alias Web.Router.Helpers, as: Routes
+      # Import convenience functions from controllers
+      import Phoenix.Controller,
+        only: [get_csrf_token: 0, view_module: 1, view_template: 1]
+
+      # Include shared imports and aliases for views
+      unquote(html_helpers())
     end
   end
 
+  # -- Verified Routes ----------------------------------
+  def verified_routes do
+    quote do
+      use Phoenix.Component
+      use Phoenix.VerifiedRoutes,
+        endpoint: Web.Endpoint,
+        router: Web.Router,
+        statics: Web.static_paths()
+
+      import Phoenix.Controller
+      import Phoenix.Component
+      import Web.CoreComponents
+    end
+  end
 
   # -- LiveView Base -------------------------------------
   def live_view do
@@ -76,7 +90,7 @@ defmodule Web do
 
       import Plug.Conn
       import Phoenix.Controller
-      import Phoenix.LiveView.Router # ✅ Required for `live` macro
+      import Phoenix.LiveView.Router
     end
   end
 
@@ -84,6 +98,25 @@ defmodule Web do
   def channel do
     quote do
       use Phoenix.Channel
+      import Web.Gettext
+    end
+  end
+
+  # -- Shared HTML Helpers -------------------------------
+  defp html_helpers do
+    quote do
+      # Core Phoenix functionality
+      import Phoenix.HTML
+      import Phoenix.Component
+
+      # Route generation
+      use Phoenix.VerifiedRoutes,
+        endpoint: Web.Endpoint,
+        router: Web.Router,
+        statics: Web.static_paths()
+
+      # Utilities and gettext
+      import Web.CoreComponents
       import Web.Gettext
     end
   end

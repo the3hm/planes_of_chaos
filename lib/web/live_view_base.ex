@@ -2,10 +2,10 @@ defmodule Web.LiveViewBase do
   @moduledoc """
   Provides the base setup for LiveView modules.
   """
+  use Phoenix.Component
 
   # Imports needed for the layout function component below
   use Gettext, backend: Web.Gettext
-  use Web.Components.PetalHelpers
   alias Web.Router.Helpers, as: Routes
   use Phoenix.VerifiedRoutes,
     endpoint: Web.Endpoint,
@@ -49,22 +49,22 @@ defmodule Web.LiveViewBase do
       <body class="bg-gray-100 admin">
         <div class="md:w-full md:z-20 flex flex-row flex-wrap items-center bg-white px-5 py-2 border-b border-purple-400">
           <div class="w-56 flex flex-row items-center">
-            <.ph_link navigate={~p"/admin"} class="flex-1 font-bold">
+            <.link navigate={~p"/admin"} class="flex-1 font-bold">
               <img src={~p"/images/exventure.png"} class="h-8 inline-block" />
               <span class="ml-1 inline-block text-purple-900">ExVenture</span>
-            </.ph_link>
+            </.link>
           </div>
 
           <div class="flex-grow flex justify-end items-center">
             <%= if assigns[:current_user] do %>
               <span class="inline-block mx-2"><%= @current_user.email %></span>
-              <.ph_link navigate={~p"/sign-out"} method="delete" class="btn-secondary text-sm">
+              <.link navigate={~p"/sign-out"} method="delete" class="btn-secondary text-sm">
                 Sign Out
-              </.ph_link>
+              </.link>
             <% else %>
-              <.ph_link navigate={~p"/sign-in"} class="btn-secondary text-sm">
+              <.link navigate={~p"/sign-in"} class="btn-secondary text-sm">
                 Sign In
-              </.ph_link>
+              </.link>
             <% end %>
           </div>
         </div>
@@ -85,9 +85,8 @@ defmodule Web.LiveViewBase do
 
       # Gettext
       import Web.Gettext
-
-      # Petal Components setup
-      use Web.Components.PetalHelpers
+      import Web.CoreComponents
+      import Phoenix.HTML.Form
 
       # Verified Routes
       use Phoenix.VerifiedRoutes,

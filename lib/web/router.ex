@@ -10,9 +10,12 @@ defmodule Web.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
+    plug :put_root_layout, html: {Web.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_live_flash
     plug Web.Plugs.FetchUser
+    plug Web.Plugs.PutCsrfTokenIntoSession
   end
 
   pipeline :logged_in do
@@ -22,6 +25,12 @@ defmodule Web.Router do
   pipeline :admin do
     plug :put_layout, [{:html, {Web.Layouts, :admin}}]
     plug Web.Plugs.EnsureAdmin
+    plug :fetch_session
+    plug :fetch_live_flash
+  end
+
+  pipeline :admin_layout do
+    plug :put_layout, {Web.Layouts, :admin}
   end
 
   pipeline :api do
@@ -85,6 +94,13 @@ defmodule Web.Router do
   # -------------------------------------------------------------
   # Admin Panel + LiveView Dashboard
   # -------------------------------------------------------------
+  scope "/admin", Web.Admin, as: :admin do
+    pipe_through [:browser]
+
+    live "/login", AdminSessionLive, :index
+    delete "/logout", AdminSessionController, :delete
+  end
+
   scope "/admin", Web.Admin, as: :admin do
     pipe_through [:browser, :logged_in, :admin]
 

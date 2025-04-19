@@ -9,7 +9,9 @@ defmodule Web.ComponentHelpers do
       # Core Phoenix setup
       use Phoenix.Component
 
-      # Petal Components setup removed
+      # Import Petal Components
+      import Petal.Components
+      alias Petal.Components, as: PC
 
       # Gettext
       import Web.Gettext

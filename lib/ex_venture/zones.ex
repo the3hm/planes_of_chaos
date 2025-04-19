@@ -50,6 +50,19 @@ defmodule ExVenture.Zones.Zone do
 end
 
 defmodule ExVenture.Zones do
+  @doc """
+  Delete a zone
+
+  Can only delete unpublished zones
+  """
+  def delete(%{live_at: nil} = zone) do
+    Repo.delete(zone)
+  end
+
+  def delete(_zone) do
+    {:error, :published}
+  end
+
   @moduledoc """
   CRUD Zones
   """
@@ -64,6 +77,10 @@ defmodule ExVenture.Zones do
   def new(), do: Ecto.Changeset.change(%Zone{}, %{})
 
   def edit(zone), do: Ecto.Changeset.change(zone, %{})
+
+  def new_changeset, do: Ecto.Changeset.change(%Zone{}, %{})
+
+  def change_zone(zone), do: Zone.update_changeset(zone, %{})
 
   @doc """
   Get all zones, paginated

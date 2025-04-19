@@ -12,13 +12,30 @@
   - Room visualization
   - Character status
 
-### Admin Dashboard
-- LiveView-based admin interface
+### Admin Dashboard (Current Focus)
+- LiveView-based admin interface with custom components
 - World management tools:
-  - Room editor
+  - Zone management (Completed)
+  - Room editor (Next Focus)
   - NPC management
   - Item creation
-  - Zone configuration
+- Completed:
+  - Admin authentication system with Argon2 password hashing
+  - Admin database schema and migrations
+  - LiveView-based login interface
+  - Protected admin routes
+  - Session management
+  - Default admin account
+  - Full Zone CRUD with staged changes
+  - Zone publishing workflow
+  - Real-time updates via PubSub
+  - Sortable and filterable zone list
+  - Form validation with error handling
+  - Confirmation modals for destructive actions
+- Next Focus:
+  - Room management interface
+  - NPC configuration tools
+  - Item management system
 
 ### Core Engine (Kantele)
 - Event-driven game mechanics
@@ -29,128 +46,128 @@
 ## Recent Changes
 
 ### Architecture
-- Implemented Phoenix LiveView for admin interfaces
-- Set up React/Redux for game client
-- Established WebSocket communication patterns
-- Configured deployment pipelines
+- Completed Zone management implementation
+- Added staged changes visualization
+- Implemented publish/unpublished state management
+- Added confirmation workflows for destructive actions
+- Enhanced real-time updates with PubSub
+- Improved form validation and error handling
 
 ### Features
-- Character creation system
-- Basic movement commands
-- Chat functionality
-- Room management
-- User authentication
-- Admin dashboard views
+- Full Zone CRUD operations
+- Zone publish workflow
+- Staged changes tracking
+- Real-time zone updates
+- Sort and filter capabilities
+- Confirmation modals
+- Enhanced error handling
 
 ## Active Decisions
 
 ### Technical Choices
-1. Using LiveView for admin interfaces
-   - Provides real-time updates
-   - Reduces JavaScript complexity
-   - Maintains server-side state
+1. LiveView for Admin Interface
+   - Real-time updates via PubSub
+   - Server-side state management
+   - Custom component patterns
+   - Modal-based workflows
+   - Staged changes tracking
 
-2. React for game client
-   - Complex UI requirements
-   - State management needs
-   - Custom rendering logic
-
-3. Data storage patterns
-   - PostgreSQL for persistent data
-   - ETS for caching
-   - Phoenix PubSub for real-time updates
+2. Zone Management Architecture
+   - Published/unpublished state control
+   - Staged changes for published zones
+   - Confirmation workflows
+   - Real-time updates
+   - Proper error handling
 
 ### Implementation Patterns
-1. Command Processing
+1. LiveView Components
    ```elixir
-   # Pattern for handling game commands
-   def handle_command(command, character) do
-     # Command validation
-     # State updates
-     # Broadcast changes
+   # Pattern for modal management
+   def handle_event("close_modal", %{"modal" => modal}, socket) do
+     {:noreply,
+      socket
+      |> assign(:"show_#{modal}_modal", false)
+      |> assign(:selected_zone, nil)
+      |> assign(:changeset, Zones.new_changeset())
+      |> assign(:action, nil)
+      |> assign(:staged_changes, [])}
    end
    ```
 
-2. State Management
+2. Confirmation Workflow
    ```elixir
-   # Pattern for managing game state
-   def update_state(state, event) do
-     # Validate changes
-     # Apply updates
-     # Notify subscribers
+   def handle_event("confirm_publish", %{"id" => id}, socket) do
+     {:noreply,
+      socket
+      |> assign(:selected_zone, %{id: id})
+      |> assign(:show_publish_modal, true)}
    end
    ```
 
 ## Project Insights
 
 ### Learned Patterns
-1. Event Broadcasting
-   - Use specific topics for different event types
-   - Include necessary context in payloads
-   - Handle failure cases gracefully
+1. Modal Management
+   - Separate modals for different actions
+   - Proper state cleanup on close
+   - Confirmation workflows
+   - Form validation display
 
-2. State Synchronization
-   - Keep client/server state in sync
-   - Handle network latency
-   - Resolve conflicts
+2. LiveView State
+   - PubSub for real-time updates
+   - Staged changes tracking
+   - Sort/filter state management
+   - Error state handling
 
-3. Performance Optimization
-   - Cache frequently accessed data
-   - Batch database operations
-   - Optimize WebSocket communication
+### Current Focus
+1. Room Management
+   - CRUD interface design
+   - Room visualization
+   - Connection management
+   - Room properties
 
-### Current Challenges
-1. Real-time Performance
-   - Large number of concurrent connections
-   - State synchronization across nodes
-   - Message broadcasting efficiency
-
-2. Game Logic
-   - Complex interaction rules
-   - NPC behavior systems
-   - Combat mechanics
-
-3. User Experience
-   - Command discoverability
-   - Feedback clarity
-   - UI responsiveness
+2. NPC System
+   - Behavior configuration
+   - Spawn management
+   - Interaction rules
 
 ## Next Steps
 
 ### Immediate Tasks
-1. [ ] Enhance command system
-2. [ ] Improve NPC behaviors
-3. [ ] Expand admin tools
-4. [ ] Add more game mechanics
+1. [x] Configure initial router setup
+2. [x] Create Zone schema and migration
+3. [x] Complete admin authentication system
+4. [x] Create Zone LiveView components
+5. [x] Implement Zone CRUD
+6. [x] Add staged changes
+7. [x] Add publish workflow
+8. [ ] Design room management interface
+9. [ ] Implement room CRUD operations
 
 ### Upcoming Features
-1. Combat System
-   - Turn-based mechanics
-   - Damage calculation
-   - Status effects
+1. Room Management
+   - Room editor interface
+   - Connection visualization
+   - Property management
+   - Room templates
 
-2. Social Features
-   - Group system
-   - Trading
-   - Chat channels
-
-3. World Building
-   - Quest system
-   - Dynamic events
-   - Weather effects
+2. NPC Configuration
+   - Behavior editor
+   - Spawn rules
+   - Interaction management
+   - Template system
 
 ## Critical Paths
 
 ### Current Implementation Focus
 ```mermaid
 graph TD
-    A[Command System] --> B[State Management]
-    B --> C[Event Broadcasting]
-    C --> D[Client Updates]
+    A[Room Editor] --> B[Room CRUD]
+    B --> C[Connection Management]
+    C --> D[Room Properties]
     
-    E[Admin Tools] --> F[World Building]
-    F --> G[Game Logic]
-    G --> B
+    E[NPC Configuration] --> F[Behavior Rules]
+    F --> G[Template System]
 ```
 
 This document is updated as the project evolves and new patterns emerge.

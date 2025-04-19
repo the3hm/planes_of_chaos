@@ -22,10 +22,9 @@ defmodule Web.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :ex_venture,
+    from: {:ex_venture, "priv/static"},
     gzip: false,
-    only_matching: ["apple", "favicon", "android"],
-    only: ~w(css fonts images js favicon.ico robots.txt manifest.json)
+    only: ~w(assets fonts images robots.txt manifest.json favicon.ico)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

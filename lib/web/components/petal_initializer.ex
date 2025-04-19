@@ -1,9 +1,14 @@
 defmodule Web.Components.PetalInitializer do
   @moduledoc """
-  Handles initialization of Petal Components
+  Handles initialization of Petal Components as a supervised process
   """
+  use GenServer
 
-  def init do
+  def start_link(_opts) do
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+  end
+
+  def init(_opts) do
     # Configure theme settings
     Application.put_env(:petal_components, :theme, %{
       app_name: "ExVenture",
@@ -11,10 +16,6 @@ defmodule Web.Components.PetalInitializer do
       dark_mode: true
     })
 
-    # Ensure Petal Components is loaded
-    case Application.ensure_all_started(:petal_components) do
-      {:ok, _} -> :ok
-      {:error, _} = error -> error
-    end
+    {:ok, %{}}
   end
 end

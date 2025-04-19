@@ -140,7 +140,7 @@ end
 config :ex_venture, Web.Endpoint,
   http: [port: String.to_integer(System.get_env("PORT") || "4000")],
   # url: [host: "localhost", port: 4000], # Adjust host and port as needed
-  secret_key_base: System.get_env("SECRET_KEY_BASE") || "a_very_long_and_secure_secret_key_base_for_development_only" # Replace in production
+  secret_key_base: System.get_env("SECRET_KEY_BASE") || "HWJk38dKSf2KnM9pYXLP3RWZbtl6FMxEQxBXnQD3HOmhfAhYUhiL9rOHyGFGgIe9mC2avykTG+emLguqv4hnOHxC66Ny4+AB" # Replace in production
 
 # ## Configuring the Repo
 #

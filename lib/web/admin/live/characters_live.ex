@@ -2,129 +2,62 @@ defmodule Web.Admin.CharactersLive do
   use Web.LiveViewBase
 
   alias ExVenture.Characters
-  alias ExVenture.Characters.Character
-  alias Phoenix.LiveView.JS
 
   @impl true
   def mount(_params, _session, socket) do
-    characters = Characters.list_characters()
+    characters = Characters.list_all()
     {:ok,
      socket
      |> assign(:page_title, "Characters")
      |> assign(:characters, characters)
-     |> assign(:filters, initial_filters())
-     |> assign(:show_modal, false)
      |> assign(:selected_character, nil)
+     |> assign(:show_modal, false)
      |> assign(:sort_by, :name)
      |> assign(:sort_order, :asc)
      |> assign(:search_text, "")}
   end
 
-  defp initial_filters do
-    %{
-      class: nil,
-      level_min: nil,
-      level_max: nil,
-      status: nil
-    }
-  end
-
-  defp class_options do
-    [
-      "Warrior",
-      "Mage",
-      "Rogue",
-      "Cleric",
-      "Ranger"
-    ]
-  end
-
-  defp status_options do
-    [
-      "active",
-      "inactive",
-      "banned"
-    ]
-  end
-
   @impl true
-  def handle_event("filter", %{"filters" => filters}, socket) do
-    filtered_chars = apply_filters(Characters.list_characters(), filters)
+  def handle_event("search", %{"search" => %{"text" => text}}, socket) do
+    filtered_characters = filter_characters(Characters.list_all(), text)
+
     {:noreply,
      socket
-     |> assign(:filters, filters)
-     |> assign(:characters, filtered_chars)}
-  end
-
-  defp apply_filters(characters, filters) do
-    characters
-    |> filter_by_class(filters["class"])
-    |> filter_by_level(filters["level_min"], filters["level_max"])
-    |> filter_by_status(filters["status"])
-  end
-
-  defp filter_by_class(characters, nil), do: characters
-  defp filter_by_class(characters, ""), do: characters
-  defp filter_by_class(characters, class) do
-    Enum.filter(characters, & &1.class == class)
-  end
-
-  defp filter_by_level(characters, min, max) do
-    characters
-    |> filter_by_min_level(min)
-    |> filter_by_max_level(max)
-  end
-
-  defp filter_by_min_level(characters, nil), do: characters
-  defp filter_by_min_level(characters, ""), do: characters
-  defp filter_by_min_level(characters, min) do
-    min = String.to_integer(min)
-    Enum.filter(characters, & &1.level >= min)
-  end
-
-  defp filter_by_max_level(characters, nil), do: characters
-  defp filter_by_max_level(characters, ""), do: characters
-  defp filter_by_max_level(characters, max) do
-    max = String.to_integer(max)
-    Enum.filter(characters, & &1.level <= max)
-  end
-
-  defp filter_by_status(characters, nil), do: characters
-  defp filter_by_status(characters, ""), do: characters
-  defp filter_by_status(characters, status) do
-    Enum.filter(characters, & &1.status == status)
+     |> assign(:search_text, text)
+     |> assign(:characters, filtered_characters)}
   end
 
   @impl true
   def handle_event("edit_character", %{"id" => id}, socket) do
-    case Characters.get_character(id) do
+    case Characters.get(id) do
       {:ok, character} ->
         {:noreply,
          socket
          |> assign(:selected_character, character)
          |> assign(:show_modal, true)}
 
-      {:error, _} ->
+      {:error, :not_found} ->
         {:noreply, put_flash(socket, :error, "Character not found")}
     end
   end
 
   @impl true
-  def handle_event("save_character", %{"character" => params}, socket) do
-    case Characters.update_character(socket.assigns.selected_character, params) do
-      {:ok, character} ->
+  def handle_event("save_character", %{"character" => character_params}, socket) do
+    character = socket.assigns.selected_character
+
+    case Characters.update(character, character_params) do
+      {:ok, _updated_character} ->
         {:noreply,
          socket
          |> assign(:show_modal, false)
          |> assign(:selected_character, nil)
-         |> put_flash(:info, "Character updated successfully")
-         |> assign(:characters, Characters.list_characters())}
+         |> put_flash(:info, "Character updated successfully")}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, changeset} ->
         {:noreply,
          socket
-         |> assign(:changeset, changeset)
-         |> put_flash(:error, "Error updating character")}
+         |> assign(:selected_character, %{character | changeset: changeset})
+         |> put_flash(:error, "Failed to update character")}
     end
   end
 
@@ -136,199 +69,120 @@ defmodule Web.Admin.CharactersLive do
      |> assign(:selected_character, nil)}
   end
 
-  @impl true
-  def handle_event("sort", %{"field" => field}, socket) do
-    {sort_by, sort_order} = get_sort_params(field, socket.assigns.sort_by, socket.assigns.sort_order)
-    sorted_chars = sort_characters(socket.assigns.characters, sort_by, sort_order)
-
-    {:noreply,
-     socket
-     |> assign(:sort_by, sort_by)
-     |> assign(:sort_order, sort_order)
-     |> assign(:characters, sorted_chars)}
-  end
-
-  defp get_sort_params(field, current_sort_by, current_sort_order) do
-    field = String.to_existing_atom(field)
-    cond do
-      field != current_sort_by -> {field, :asc}
-      current_sort_order == :asc -> {field, :desc}
-      true -> {field, :asc}
-    end
-  end
-
-  defp sort_characters(characters, sort_by, sort_order) do
-    Enum.sort_by(characters, &Map.get(&1, sort_by), sort_order)
-  end
-
-  @impl true
-  def handle_event("search", %{"search" => %{"text" => text}}, socket) do
-    filtered_chars = filter_by_search(Characters.list_characters(), text)
-
-    {:noreply,
-     socket
-     |> assign(:search_text, text)
-     |> assign(:characters, filtered_chars)}
-  end
-
-  defp filter_by_search(characters, ""), do: characters
-  defp filter_by_search(characters, search_text) do
+  defp filter_characters(characters, ""), do: characters
+  defp filter_characters(characters, search_text) do
     search_text = String.downcase(search_text)
     Enum.filter(characters, fn char ->
-      String.contains?(String.downcase(char.name), search_text) ||
-        String.contains?(String.downcase(char.user.email), search_text)
+      String.contains?(String.downcase(char.name || ""), search_text)
     end)
   end
+
+  defp character_status_color(:active), do: "badge-success"
+  defp character_status_color(:banned), do: "badge-warning"
+  defp character_status_color(:deleted), do: "badge-error"
+  defp character_status_color(_), do: "badge-secondary"
+
+  defp character_status_text(:active), do: "Active"
+  defp character_status_text(:banned), do: "Banned"
+  defp character_status_text(:deleted), do: "Deleted"
+  defp character_status_text(_), do: "Unknown"
 
   @impl true
   def render(assigns) do
     ~H"""
     <div class="space-y-6">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <.form for={%{}} phx-change="filter" class="grid grid-cols-1 md:grid-cols-4 gap-4 flex-grow">
-          <div class="w-full">
-            <.ph_input
-              type="select"
-              name="filters[class]"
-              value={@filters.class}
-              options={class_options()}
-              prompt="Filter by Class"
-            />
-          </div>
-          <div class="w-full">
-            <.ph_input
-              type="select"
-              name="filters[status]"
-              value={@filters.status}
-              options={status_options()}
-              prompt="Filter by Status"
-            />
-          </div>
-          <div class="w-full">
-            <.ph_input
-              type="number"
-              name="filters[level_min]"
-              value={@filters.level_min}
-              placeholder="Min Level"
-            />
-          </div>
-          <div class="w-full">
-            <.ph_input
-              type="number"
-              name="filters[level_max]"
-              value={@filters.level_max}
-              placeholder="Max Level"
-            />
-          </div>
-        </.form>
-
-        <div class="w-full md:w-64">
-          <.form :let={f} for={%{}} as={:search} phx-change="search">
-            <.ph_input
-              type="text"
-              field={f[:text]}
-              value={@search_text}
-              placeholder="Search characters..."
-              phx-debounce="300"
-            />
+      <div class="flex justify-between items-center">
+        <div class="flex-1 max-w-sm">
+          <.form :let={f} for={%{}} as={:search} phx-change="search" class="flex-1">
+            <%= Phoenix.HTML.Form.text_input f, :text,
+              value: @search_text,
+              placeholder: "Search characters...",
+              class: "input input-bordered w-full"
+            %>
           </.form>
         </div>
       </div>
 
-      <.ph_table
-        id="characters-table"
-        rows={@characters}
-        row_click={fn char -> JS.push("edit_character", value: %{id: char.id}) end}
-      >
-        <:col :let={char} label="Name" class="w-1/5">
-          <%= char.name %>
-        </:col>
+      <div class="overflow-x-auto">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>User</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= for char <- @characters do %>
+              <tr id={"character-#{char.id}"}>
+                <td><%= char.name %></td>
+                <td><%= char.user.email %></td>
+                <td>
+                  <span class={"badge #{character_status_color(char.status)}"}>
+                    <%= character_status_text(char.status) %>
+                  </span>
+                </td>
+                <td><%= Calendar.strftime(char.inserted_at, "%Y-%m-%d") %></td>
+                <td>
+                  <.button phx-click="edit_character" phx-value-id={char.id} class="btn btn-sm btn-secondary">
+                    <.icon name="hero-pencil" class="w-4 h-4 mr-1" /> Edit
+                  </.button>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
 
-        <:col :let={char} label="Class" class="w-1/5">
-          <%= char.class %>
-        </:col>
+      <%!-- Modal Dialog --%>
+      <%= if @show_modal do %>
+        <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+          <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <%!-- Background overlay --%>
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" phx-click="close_modal"></div>
 
-        <:col :let={char} label="Level" class="w-1/6 text-center">
-          <%= char.level %>
-        </:col>
+            <%!-- Modal panel --%>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <.form :let={f} for={@selected_character} phx-submit="save_character">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                    Edit Character: <%= @selected_character.name %>
+                  </h3>
+                  <div class="mt-4 space-y-4">
+                    <div class="form-control w-full">
+                      <%= Phoenix.HTML.Form.label f, :name, "Name", class: "label" %>
+                      <%= Phoenix.HTML.Form.text_input f, :name, value: @selected_character.name, class: "input input-bordered w-full" %>
+                      <%= Phoenix.HTML.Form.error_tag f, :name %>
+                    </div>
 
-        <:col :let={char} label="Status" class="w-1/5">
-          <.ph_badge color={character_status_color(char.status)}>
-            <%= char.status %>
-          </.ph_badge>
-        </:col>
-
-        <:col :let={char} label="User" class="w-1/5">
-          <%= char.user.email %>
-        </:col>
-
-        <:action :let={char}>
-          <.ph_button phx-click="edit_character" phx-value-id={char.id} icon_name="hero-pencil">
-            Edit
-          </.ph_button>
-        </:action>
-      </.ph_table>
-
-
-      <.ph_modal :if={@show_modal} id="edit-character-modal" show={@show_modal} on_close="close_modal">
-        <:title>Edit Character</:title>
-
-        <.form for={%{}} phx-submit="save_character" class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <.ph_input type="text" label="Name" name="character[name]" value={@selected_character.name} />
-            </div>
-            <div>
-              <.ph_input
-                type="select"
-                label="Status"
-                name="character[status]"
-                value={@selected_character.status}
-                options={status_options()}
-              />
+                    <div class="form-control w-full">
+                      <%= Phoenix.HTML.Form.label f, :status, "Status", class: "label" %>
+                      <%= Phoenix.HTML.Form.select f, :status, [
+                        {"Active", :active},
+                        {"Banned", :banned},
+                        {"Deleted", :deleted}
+                      ], value: @selected_character.status, class: "select select-bordered w-full" %>
+                      <%= Phoenix.HTML.Form.error_tag f, :status %>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                  <.button type="submit" class="btn btn-primary">
+                    Save Changes
+                  </.button>
+                  <.button type="button" phx-click="close_modal" class="btn btn-outline ml-3">
+                    Cancel
+                  </.button>
+                </div>
+              </.form>
             </div>
           </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <.ph_input
-                type="select"
-                label="Class"
-                name="character[class]"
-                value={@selected_character.class}
-                options={class_options()}
-              />
-            </div>
-            <div>
-              <.ph_input
-                type="number"
-                label="Level"
-                name="character[level]"
-                value={@selected_character.level}
-              />
-            </div>
-          </div>
-
-          <div class="mt-6 flex justify-end space-x-3">
-            <.ph_button type="button" variant="outline" phx-click="close_modal">
-              Cancel
-            </.ph_button>
-            <.ph_button type="submit" color="primary">
-              Save Changes
-            </.ph_button>
-          </div>
-        </.form>
-      </.ph_modal>
+        </div>
+      <% end %>
     </div>
     """
-  end
-
-  defp character_status_color(status) do
-    case status do
-      "active" -> "success"
-      "inactive" -> "warning"
-      "banned" -> "danger"
-      _ -> "secondary"
-    end
   end
 end

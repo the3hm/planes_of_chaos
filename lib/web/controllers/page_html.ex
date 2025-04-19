@@ -4,7 +4,10 @@ defmodule Web.PageHTML do
   """
 
   use Web, :html
+  use Web, :verified_routes
+  use Phoenix.Component
 
+  import Web.CoreComponents
   embed_templates "page_html/*"
 
   # Add this helper so your template compiles

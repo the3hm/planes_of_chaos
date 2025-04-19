@@ -1,0 +1,34 @@
+<div class="sm:mx-auto sm:w-full sm:max-w-md">
+  <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    Sign in to ExVenture
+  </h2>
+  <p class="mt-2 text-center text-sm text-gray-600">
+    Or
+    <.link href={~p"/register"} class="font-medium text-indigo-600 hover:text-indigo-500">
+      create a new account
+    </.link>
+  </p>
+</div>
+
+<div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+  <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+    <.form :let={f} for={@changeset} action={~p"/sign-in"} class="space-y-6">
+      <div class="space-y-4">
+        <.input type="email" name="user[email]" label="Email address" required />
+        <.input type="password" name="user[password]" label="Password" required />
+      </div>
+
+      <div>
+        <.button type="submit" class="w-full flex justify-center">
+          Sign in
+        </.button>
+      </div>
+
+      <div class="text-sm text-center">
+        <.link href={~p"/register/reset"} class="font-medium text-indigo-600 hover:text-indigo-500">
+          Forgot your password?
+        </.link>
+      </div>
+    </.form>
+  </div>
+</div>

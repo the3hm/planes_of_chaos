@@ -10,7 +10,6 @@ defmodule Web.DashboardLive do
 
   use Web.LiveViewBase
 
-  import PetalComponents.Button # Add back import
   import Web.DashboardComponents
 
 
@@ -26,7 +25,7 @@ defmodule Web.DashboardLive do
       <:header>
         <div class="flex justify-between items-center">
           <h1 class="text-2xl font-bold">Dashboard</h1>
-          <.button icon="plus">New Action</.button>
+          <.button label="New Action" />
         </div>
       </:header>
 

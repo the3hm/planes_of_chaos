@@ -31,9 +31,21 @@
 - [x] User management
 - [x] Character overview
 - [x] Room editor basics
-- [x] Zone management
+- [x] Zone management system
+  - [x] Zone CRUD operations
+  - [x] Publish/unpublish workflow
+  - [x] Staged changes system
+  - [x] Real-time updates
+  - [x] Sort and filter
+  - [x] Form validation
+  - [x] Confirmation dialogs
+- [x] Authentication system
+  - [x] Admin schema and migrations
+  - [x] Login interface
+  - [x] Protected routes
+  - [x] Session handling
+  - [x] Default admin account
 - [x] Dashboard metrics
-- [x] LiveView components
 
 ### World Building
 - [x] Basic zone structure
@@ -43,6 +55,16 @@
 - [x] World configuration format
 
 ## In Progress
+
+### Room Management System
+- [ ] Room LiveView components
+- [ ] Room CRUD operations
+- [ ] Connection visualization
+- [ ] Property management
+- [ ] Room templates
+- [ ] Add form validations
+- [ ] Implement error handling
+- [ ] Room linking interface
 
 ### Game Mechanics
 - [ ] Combat system implementation
@@ -66,11 +88,11 @@
 - [ ] Client performance optimization
 
 ### Admin Tools
-- [ ] Advanced room editor
 - [ ] NPC behavior editor
 - [ ] Quest builder
 - [ ] Item creator
 - [ ] World state monitor
+- [ ] Advanced room visualization
 
 ## Planned Features
 
@@ -113,7 +135,7 @@
    - Resource gathering
 
 ### Phase 3: Advanced Features
-1. World Building
+1. World Building Tools
    - Template system
    - Scripting tools
    - Event editor
@@ -127,11 +149,9 @@
 
 ## Known Issues
 
-### Critical
-1. None currently identified
-
 ### High Priority
-- Performance optimization needed for large rooms
+- Room connection visualization needs implementation
+- Room property validation rules needed
 - WebSocket reconnection handling
 - State synchronization edge cases
 
@@ -139,6 +159,7 @@
 - Admin interface UX improvements
 - Command parsing edge cases
 - Client-side error handling
+- Room template system design
 
 ### Low Priority
 - Additional client customization options
@@ -148,7 +169,7 @@
 ## Technical Debt
 
 ### Code Quality
-- [ ] Improve test coverage
+- [ ] Improve test coverage for admin features
 - [ ] Refactor command handling
 - [ ] Optimize database queries
 - [ ] Clean up CSS organization

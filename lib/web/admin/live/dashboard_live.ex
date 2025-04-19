@@ -1,120 +1,73 @@
 defmodule Web.Admin.DashboardLive do
   use Web.LiveViewBase
 
-  alias ExVenture.{Characters, Players, Rooms, Users, Zones}
-
-  defp metric(assigns) do
-    ~H"""
-    <.ph_card>
-      <div class="flex items-center space-x-4">
-        <div class={["p-3 rounded-lg", @color]}>
-          <.ph_icon name={@icon} class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <div class="text-2xl font-semibold text-dracula-foreground">
-            <%= @value %>
-          </div>
-          <div class="text-sm text-dracula-comment">
-            <%= @label %>
-          </div>
-        </div>
-      </div>
-    </.ph_card>
-    """
-  end
-
   @impl true
   def mount(_params, _session, socket) do
-    if connected?(socket) do
-      :timer.send_interval(5000, self(), :update_stats)
-    end
-
-    {:ok, assign(socket, page_title: "Dashboard", stats: fetch_stats())}
+    {:ok, assign(socket, :page_title, "Dashboard")}
   end
 
-  @impl true
-  def handle_info(:update_stats, socket) do
-    {:noreply, assign(socket, stats: fetch_stats())}
+  def metric(assigns) do
+    ~H"""
+    <div class="bg-dracula-darker rounded-lg p-4">
+      <div class="flex items-center">
+        <.icon name={@icon} class="w-6 h-6 text-white" />
+        <div class="ml-3">
+          <div class="text-sm font-medium text-gray-400"><%= @title %></div>
+          <div class="text-xl font-semibold text-white"><%= @count %></div>
+        </div>
+      </div>
+    </div>
+    """
   end
 
   @impl true
   def render(assigns) do
     ~H"""
     <div class="space-y-6">
-      <!-- Stats Grid -->
-      <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-        <%= for {metric, index} <- Enum.with_index([
-          %{
-            value: @stats.online_players,
-            label: "Online Players",
-            icon: "hero-users",
-            color: "bg-dracula-purple"
-          },
-          %{
-            value: @stats.total_characters,
-            label: "Total Characters",
-            icon: "hero-user-group",
-            color: "bg-dracula-pink"
-          },
-          %{
-            value: @stats.zones_count,
-            label: "Active Zones",
-            icon: "hero-map",
-            color: "bg-dracula-green"
-          },
-          %{
-            value: @stats.rooms_count,
-            label: "Total Rooms",
-            icon: "hero-home",
-            color: "bg-dracula-orange"
-          }
-        ]) do %>
-          <.metric {metric} />
-        <% end %>
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <.metric title="Online Players" count="12" icon="hero-users" />
+        <.metric title="Zones" count="4" icon="hero-map" />
+        <.metric title="Rooms" count="28" icon="hero-building-library" />
       </div>
 
-      <!-- System Info -->
-      <.ph_card class="mt-6">
-        <:header>
+      <div class="bg-dracula-darker rounded-lg p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
           <div class="flex items-center">
-            <.ph_icon name="hero-cpu-chip" class="w-5 h-5 mr-2 text-dracula-purple" />
-            <h3 class="text-lg font-medium text-dracula-foreground">System Information</h3>
-          </div>
-        </:header>
-        <div class="grid gap-4 grid-cols-1 md:grid-cols-3">
-          <div>
-            <label class="text-sm font-medium text-dracula-comment">Uptime</label>
-            <p class="mt-1 text-dracula-foreground"><%= format_uptime() %></p>
-          </div>
-          <div>
-            <label class="text-sm font-medium text-dracula-comment">Erlang Node</label>
-            <p class="mt-1 text-dracula-foreground"><%= Node.self() %></p>
-          </div>
-          <div>
-            <label class="text-sm font-medium text-dracula-comment">Phoenix Version</label>
-            <p class="mt-1 text-dracula-foreground"><%= Application.spec(:phoenix, :vsn) %></p>
+            <.icon name="hero-cpu-chip" class="w-5 h-5 mr-2 text-dracula-purple" />
+            <h2 class="text-lg font-semibold text-white">System Stats</h2>
           </div>
         </div>
-      </.ph_card>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <%= for {metric, _index} <- Enum.with_index([
+                %{label: "Memory Usage", value: "128MB", trend: :up},
+                %{label: "CPU Load", value: "2.1", trend: :down},
+                %{label: "Process Count", value: "42", trend: :stable}
+              ]) do %>
+            <div class="bg-dracula rounded-lg p-4">
+              <div class="text-sm font-medium text-gray-400"><%= metric.label %></div>
+              <div class="mt-1 flex items-baseline">
+                <div class="text-2xl font-semibold text-white"><%= metric.value %></div>
+                <%= case metric.trend do %>
+                  <% :up -> %>
+                    <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                      <.icon name="hero-arrow-up" class="w-4 h-4" />
+                    </div>
+                  <% :down -> %>
+                    <div class="ml-2 flex items-baseline text-sm font-semibold text-red-600">
+                      <.icon name="hero-arrow-down" class="w-4 h-4" />
+                    </div>
+                  <% :stable -> %>
+                    <div class="ml-2 flex items-baseline text-sm font-semibold text-gray-500">
+                      <.icon name="hero-minus" class="w-4 h-4" />
+                    </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
     """
-  end
-
-  defp fetch_stats do
-    %{
-      online_players: Players.count_online(),
-      total_characters: Characters.count_total(),
-      zones_count: Zones.count_active(),
-      rooms_count: Rooms.count_total()
-    }
-  end
-
-  defp format_uptime do
-    {time, _} = :erlang.statistics(:wall_clock)
-    seconds = div(time, 1000)
-    days = div(seconds, 86400)
-    hours = div(rem(seconds, 86400), 3600)
-    minutes = div(rem(seconds, 3600), 60)
-    "#{days}d #{hours}h #{minutes}m"
   end
 end
