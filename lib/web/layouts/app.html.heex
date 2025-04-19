@@ -35,10 +35,16 @@
       </div>
 
       <div class="flex-grow flex justify-end items-center">
-        <span class="inline-block mx-2"><%= @current_user.email %></span>
-        <.link navigate={~p"/sign-out"} method="delete" class="btn-secondary text-sm">
-          Sign Out
-        </.link>
+        <%= if assigns[:current_user] do %>
+          <span class="inline-block mx-2"><%= @current_user.email %></span>
+          <.link navigate={~p"/sign-out"} method="delete" class="btn-secondary text-sm">
+            Sign Out
+          </.link>
+        <% else %>
+          <.link navigate={~p"/sign-in"} class="btn-secondary text-sm">
+            Sign In
+          </.link>
+        <% end %>
       </div>
     </div>
 

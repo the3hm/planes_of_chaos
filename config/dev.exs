@@ -16,6 +16,7 @@ config :ex_venture, Web.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
+  secret_key_base: "QxBXnQD3HOmhfAhYUhiL9rOHyGFGgIe9mC2avykTG+emLguqv4hnOHxC66Ny4+AB",
   watchers: [
     # Use yarn directly as the executable
     yarn: [

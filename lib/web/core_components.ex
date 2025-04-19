@@ -6,13 +6,10 @@ defmodule Web.CoreComponents do
 
   use Phoenix.Component
 
+  import Phoenix.HTML.Form
+
   @doc """
   A basic button component.
-
-  ## Examples
-
-      <.button label="Click me" />
-      <.button label="Delete" phx_click="delete" class="btn btn-danger" />
   """
   attr :label, :string, required: true
   attr :phx_click, :string, default: nil
@@ -30,6 +27,41 @@ defmodule Web.CoreComponents do
     >
       <%= @label %>
     </button>
+    """
+  end
+
+  @doc """
+  A flash group component for displaying flash messages.
+  """
+  attr :flash, :map, required: true
+
+  def flash_group(assigns) do
+    ~H"""
+    <%= if @flash["info"] do %>
+      <div class="alert alert-info" role="alert">
+        <%= @flash["info"] %>
+      </div>
+    <% end %>
+
+    <%= if @flash["error"] do %>
+      <div class="alert alert-danger" role="alert">
+        <%= @flash["error"] %>
+      </div>
+    <% end %>
+    """
+  end
+
+  @doc """
+  A simple icon component using Heroicons.
+  """
+  attr :name, :string, required: true
+  attr :class, :string, default: "w-4 h-4"
+
+  def icon(assigns) do
+    ~H"""
+    <svg class={@class}>
+      <use href={"/assets/icons/#{@name}.svg#icon"}></use>
+    </svg>
     """
   end
 end

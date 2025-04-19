@@ -44,26 +44,19 @@ defmodule ExVenture.MixProject do
   defp deps do
     [
       # Core Phoenix + HTML + LiveView
-      {:phoenix, "~> 1.7.10"},
-      {:phoenix_ecto, "~> 4.6"},
-      {:phoenix_html, "~> 4.1"},
-      {:phoenix_live_dashboard, "~> 0.8.6"},
+      {:phoenix, "~> 1.7.0"},
+      {:phoenix_html, "~> 3.3"},
+      {:phoenix_ecto, "~> 4.4"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 1.0"},
-      {:phoenix_pubsub, "~> 2.0"},
-      {:phoenix_view, "~> 2.0"}, # Added for EEx rendering via controllers
+      {:phoenix_live_dashboard, "~> 0.8.0"},
+      {:phoenix_live_view, "~> 0.19.0"},
+      {:phoenix_pubsub, "~> 2.1"},
+      {:phoenix_view, "~> 2.0"},
 
       # UI & Styling
-      {:backpex, "~> 0.12.0"},
-      {:fluxon, "~> 1.0.10", repo: :fluxon},
       {:tailwind, "~> 0.3.1"},
-      {:heroicons,
-      github: "tailwindlabs/heroicons",
-      tag: "v2.1.5",
-      app: false,
-      compile: false,
-      sparse: "optimized"},
-      {:petal_components, "~> 3.0"},
+      {:heroicons, "~> 0.5.3"},
+      {:petal_components, "~> 1.3.0"},
 
       # Storage & Uploads
       {:stein, "~> 0.5"},

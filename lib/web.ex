@@ -13,12 +13,12 @@ defmodule Web do
   # -- Controller ---------------------------------------
   def controller do
     quote do
-      use Phoenix.Controller, formats: [:html, :json], namespace: Web
+      use Phoenix.Controller,
+        formats: [:html, :json],
+        layouts: [html: Web.Layouts]
 
       import Plug.Conn
       import Web.Gettext
-      alias Web.Router.Helpers, as: Routes
-
       use Phoenix.VerifiedRoutes,
         endpoint: Web.Endpoint,
         router: Web.Router,
@@ -26,19 +26,17 @@ defmodule Web do
     end
   end
 
+
   # -- HTML Components ----------------------------------
   def html do
     quote do
-      use Phoenix.Component
-      import Phoenix.Component
+      # Core imports
       import Phoenix.HTML
-      import Web.Gettext       # <-- this is already there, good
-      alias Web.Router.Helpers, as: Routes
+      import Web.Gettext
 
-      use Phoenix.VerifiedRoutes,
-        endpoint: Web.Endpoint,
-        router: Web.Router,
-        statics: Web.static_paths()
+      # Components & LiveView
+      use Web.Components.PetalHelpers
+      alias Web.Router.Helpers, as: Routes
     end
   end
 
@@ -49,11 +47,14 @@ defmodule Web do
       use Phoenix.LiveView,
         layout: {Web.Layouts, :root}
 
-      import Phoenix.LiveView
-      import Phoenix.LiveView.Helpers
-      import Phoenix.Component
+      use Web.Components.PetalHelpers
       import Web.Gettext
-      alias Web.Router.Helpers, as: Routes
+
+      # Import verified routes here
+      use Phoenix.VerifiedRoutes,
+        endpoint: Web.Endpoint,
+        router: Web.Router,
+        statics: Web.static_paths()
     end
   end
 
@@ -62,7 +63,7 @@ defmodule Web do
     quote do
       use Phoenix.LiveComponent
 
-      import Phoenix.Component
+      use Web.Components.PetalHelpers
       import Web.Gettext
       alias Web.Router.Helpers, as: Routes
     end

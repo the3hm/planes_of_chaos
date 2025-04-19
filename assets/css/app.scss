@@ -1,9 +1,13 @@
+@import "./colors.scss";
+@import "../../deps/petal_components/assets/default.css";
+
 @tailwind base;
-
 @tailwind components;
+@tailwind utilities;
 
+/* Convert @apply rules to direct class usage with SCSS syntax */
 html, body {
-  @apply h-full;
+  height: 100%;
 }
 
 iframe {
@@ -11,237 +15,331 @@ iframe {
 }
 
 .btn-primary {
-  @apply inline-flex items-center px-2.5 py-1.5 border border-transparent font-medium rounded-md shadow-sm text-white bg-blue-600;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.625rem;
+  border: 1px solid transparent;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  color: white;
+  background-color: #2563eb;
 
   &:focus {
-    @apply outline-none ring-2 ring-offset-2 ring-blue-500;
+    outline: none;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #3b82f6;
   }
 
   &:hover {
-    @apply bg-blue-700;
+    background-color: #1d4ed8;
   }
 }
 
 .btn-secondary {
-  @apply inline-flex items-center px-2.5 py-1.5 border border-transparent font-medium rounded-md text-blue-700 bg-blue-100 ;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.625rem;
+  border: 1px solid transparent;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  color: #1d4ed8;
+  background-color: #dbeafe;
 
   &:focus {
-    @apply outline-none ring-2 ring-offset-2 ring-indigo-500;
+    outline: none;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #6366f1;
   }
 
   &:hover {
-    @apply bg-blue-200;
+    background-color: #bfdbfe;
   }
 }
 
 .btn-inactive {
-  @apply bg-gray-500 text-white font-bold py-2 px-4 rounded;
+  background-color: #6b7280;
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
 
   &:focus {
-    @apply outline-none ring;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
   }
 
   &:hover {
-    @apply bg-gray-700;
+    background-color: #374151;
   }
 }
 
 nav .link {
-  @apply inline-block text-white no-underline py-2 px-2;
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem;
 
   &:hover {
-    @apply text-gray-200;
+    color: #e5e7eb;
   }
 }
 
 .form {
-  @apply bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4;
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  padding: 2rem 1rem;
+  margin-bottom: 1rem;
 }
 
 .label {
-  @apply block text-gray-700 text-sm font-bold mb-2;
+  display: block;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .input {
-  @apply appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 sm:text-sm;
+  appearance: none;
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  &::placeholder {
+    color: #9ca3af;
+  }
 
   &:focus {
-    @apply outline-none ring-blue-500 border-blue-500;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    border-color: #3b82f6;
   }
-}
-
-.input:focus {
-  @apply outline-none ring;
 }
 
 .input-group {
-  @apply mb-6;
+  margin-bottom: 1.5rem;
 
   &.error {
     .label {
-      @apply text-red-700;
+      color: #b91c1c;
     }
 
     .input {
-      @apply border-red-700;
+      border-color: #b91c1c;
     }
 
     .help-block {
-      @apply text-red-700;
+      color: #b91c1c;
     }
   }
 }
 
-@screen md {
+@media (min-width: 768px) {
   .input-group {
-    @apply flex;
+    display: flex;
 
     > *:first-child {
-      @apply w-1/3;
+      width: 33.333333%;
     }
 
     > *:nth-child(2) {
-      @apply w-2/3;
+      width: 66.666667%;
     }
   }
 }
 
 .tooltip {
-  @apply absolute hidden mt-1 z-50 bg-black text-white text-sm rounded py-1 px-4 opacity-75 border-solid border border-gray-600;
+  position: absolute;
+  display: none;
+  margin-top: 0.25rem;
+  z-index: 50;
+  background-color: black;
+  color: white;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  padding: 0.25rem 1rem;
+  opacity: 0.75;
+  border: 1px solid #4b5563;
 }
 
 .tooltip-hover {
   &.right .tooltip {
-    @apply right-0;
+    right: 0;
   }
 
   &:hover .tooltip {
-    @apply block;
+    display: block;
   }
 }
 
 .admin {
   .btn-primary {
-    @apply bg-purple-600 text-white flex justify-center;
+    background-color: #9333ea;
+    color: white;
+    display: flex;
+    justify-content: center;
 
     &:focus {
-      @apply ring-purple-500;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.5);
     }
 
     &:hover {
-      @apply bg-purple-700;
+      background-color: #7e22ce;
     }
   }
 
-  @screen md {
+  @media (min-width: 768px) {
     .btn-primary {
-      @apply px-4;
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
 
     .btn-secondary {
-      @apply px-4;
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
   }
 
   .btn-secondary {
-    @apply bg-purple-200;
+    background-color: #e9d5ff;
 
     &:focus {
-      @apply ring-purple-500;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.5);
     }
 
     &:hover {
-      @apply bg-purple-400;
+      background-color: #c084fc;
     }
   }
 
   .input {
     &:focus {
-      @apply ring-purple-500 border-purple-500;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.5);
+      border-color: #a855f7;
     }
-
   }
 
   [type="radio"] {
-    @apply text-purple-500;
+    color: #a855f7;
 
     &:focus {
-      @apply ring-purple-500 border-purple-500;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.5);
+      border-color: #a855f7;
     }
   }
 
   a {
-    @apply text-purple-700;
+    color: #7e22ce;
   }
 
   nav a {
-    @apply block px-2 py-3 text-white bg-gray-700 border-l-4 border-gray-700;
+    display: block;
+    padding: 0.75rem 0.5rem;
+    color: white;
+    background-color: #374151;
+    border-left: 4px solid #374151;
   }
 
   nav a:hover {
-    @apply bg-gray-800 border-gray-800;
+    background-color: #1f2937;
+    border-left: 4px solid #1f2937;
   }
 
   nav a.active {
-    @apply bg-gray-800 border-purple-400;
+    background-color: #1f2937;
+    border-left: 4px solid #c084fc;
   }
 
   .page-header {
-    @apply flex flex-row items-center h-12;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 3rem;
   }
 
   .actions {
-    @apply flex-grow flex justify-end space-x-2;
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
   }
 
   .panel {
-    @apply border-t-2 border-purple-600 rounded mt-2;
+    border-top: 2px solid #9333ea;
+    border-radius: 0.25rem;
+    margin-top: 0.5rem;
   }
 
   .panel-container {
-    @apply border border-gray-200 p-2 bg-white;
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+    background-color: white;
   }
 
   .table {
-    @apply table-fixed w-full mt-2;
+    table-layout: fixed;
+    width: 100%;
+    margin-top: 0.5rem;
 
     th {
-      @apply px-4 py-2;
+      padding: 0.5rem 1rem;
     }
 
     td {
-      @apply px-4 py-2;
+      padding: 0.5rem 1rem;
     }
   }
 
   .attributes {
     th {
-      @apply w-64;
+      width: 16rem;
     }
   }
 
   .pagination {
-    @apply bg-white px-4 py-3 flex justify-end border-t border-gray-200 sm:px-6;
+    background-color: white;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #e5e7eb;
+
+    @media (min-width: 640px) {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
   }
 
   .page-link {
-    @apply relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    background-color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
 
     &.active {
-      @apply text-purple-400;
+      color: #c084fc;
     }
 
     &.disabled {
-      @apply text-gray-300;
+      color: #d1d5db;
     }
   }
 
   .terminal {
-    @apply bg-gray-900 text-gray-500 p-4 my-2 font-mono;
+    background-color: #111827;
+    color: #6b7280;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    font-family: monospace;
   }
 }
-
-@tailwind utilities;
 
 .blink {
   animation: 2s linear infinite blink_effect;
@@ -270,45 +368,48 @@ div {
   scrollbar-width: none;
 }
 
-@import "colors";
-
 .admin {
   .icon {
-    @apply bg-gray-500 border-2 border-gray-600;
+    background-color: #6b7280;
+    border: 2px solid #4b5563;
 
     .map-icon {
-      @apply text-gray-900;
+      color: #111827;
     }
 
     &.blue {
-      @apply bg-blue-500 border-blue-600;
+      background-color: #3b82f6;
+      border-color: #2563eb;
 
       .map-icon {
-        @apply text-gray-100;
+        color: #f3f4f6;
       }
     }
 
     &.brown {
-      @apply bg-yellow-800 border-yellow-900;
+      background-color: #92400e;
+      border-color: #78350f;
 
       .map-icon {
-        @apply text-gray-100;
+        color: #f3f4f6;
       }
     }
 
     &.green {
-      @apply bg-green-500 border-green-600;
+      background-color: #22c55e;
+      border-color: #16a34a;
 
       .map-icon {
-        @apply text-gray-800;
+        color: #1f2937;
       }
     }
 
     &.yellow {
-      @apply bg-yellow-500 border-yellow-600;
+      background-color: #eab308;
+      border-color: #ca8a04;
 
       .map-icon {
-        @apply text-gray-800;
+        color: #1f2937;
       }
     }
   }

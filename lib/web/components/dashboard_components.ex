@@ -11,7 +11,6 @@ defmodule Web.DashboardComponents do
   """
 
   use Phoenix.Component
-  use Fluxon.Component
   use PetalComponents
 
   import PetalComponents.Icon, only: [icon: 1] # ✅ makes `<.icon>` work

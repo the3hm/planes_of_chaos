@@ -1,50 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-dracula">
   <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <title><%= gettext("ExVenture") %></title>
-
-
-    <link rel="stylesheet" href={Web.Endpoint.static_path("/css/app.css")} />
-    <meta property="og:site_name" content={gettext("ExVenture")} />
-
-    <%= if assigns[:open_graph_title] do %>
-      <meta property="og:title" content={@open_graph_title} />
-    <% end %>
-    <%= if assigns[:open_graph_description] do %>
-      <meta property="og:description" content={@open_graph_description} />
-    <% end %>
-    <%= if assigns[:open_graph_url] do %>
-      <meta property="og:url" content={@open_graph_url} />
-    <% end %>
-
-    <meta name="twitter:card" content="summary" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="csrf-token" content={get_csrf_token()}>
+    {csrf_meta_tag()}
+    <.live_title suffix=" · Admin">
+      <%= assigns[:page_title] || "Planes of Chaos" %>
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"}/>
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
   </head>
+  <body class="h-full">
+    <div class="min-h-full">
+      <.flash_group flash={@flash} />
+      <nav class="bg-dracula-darker border-b border-dracula-light">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex h-16 items-center justify-between">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <img class="h-8 w-8" src="/images/logo.svg" alt="Planes of Chaos"/>
+              </div>
+              <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-4">
+                  <.link 
+                    navigate={~p"/admin"} 
+                    class="text-dracula-purple px-3 py-2 rounded-md text-sm font-medium hover:bg-dracula-selection hover:text-dracula-pink">
+                    Dashboard
+                  </.link>
+                  <.link 
+                    navigate={~p"/admin/users"} 
+                    class="text-dracula-foreground hover:bg-dracula-selection hover:text-dracula-pink px-3 py-2 rounded-md text-sm font-medium">
+                    Users
+                  </.link>
+                  <.link 
+                    navigate={~p"/admin/characters"} 
+                    class="text-dracula-foreground hover:bg-dracula-selection hover:text-dracula-pink px-3 py-2 rounded-md text-sm font-medium">
+                    Characters
+                  </.link>
+                  <.link 
+                    navigate={~p"/admin/zones"} 
+                    class="text-dracula-foreground hover:bg-dracula-selection hover:text-dracula-pink px-3 py-2 rounded-md text-sm font-medium">
+                    Zones
+                  </.link>
+                </div>
+              </div>
+            </div>
+            <div class="hidden md:block">
+              <div class="ml-4 flex items-center md:ml-6">
+                <.button color="primary" link_type="button" class="mr-3">
+                  <.icon name="hero-plus" class="w-5 h-5 mr-1" /> New Zone
+                </.button>
+                <div class="relative ml-3">
+                  <div>
+                    <.button color="secondary" link_type="button">
+                      <span class="sr-only">Open user menu</span>
+                      <.icon name="hero-user-circle" class="w-8 h-8" />
+                    </.button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="-mr-2 flex md:hidden">
+              <.button 
+                color="secondary" 
+                link_type="button" 
+                class="inline-flex items-center justify-center rounded-md p-2"
+                phx-click={JS.toggle(to: "#mobile-menu")}>
+                <span class="sr-only">Open main menu</span>
+                <.icon name="hero-bars-3" class="w-6 h-6" />
+              </.button>
+            </div>
+          </div>
+        </div>
 
-  <body class="bg-gray-100 admin">
-    <div class="md:w-full md:z-20 flex flex-row flex-wrap items-center bg-white px-5 py-2 border-b border-purple-400">
-      <div class="w-56 flex flex-row items-center">
-        <.link navigate={~p"/admin"} class="flex-1 font-bold">
-          <img src={Web.Endpoint.static_path("/images/exventure.png")} class="h-8 inline-block" />
-          <span class="ml-1 inline-block text-purple-900">ExVenture</span>
-        </.link>
-      </div>
+        <div class="md:hidden hidden" id="mobile-menu">
+          <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+            <.link 
+              navigate={~p"/admin"} 
+              class="text-dracula-purple block px-3 py-2 rounded-md text-base font-medium hover:bg-dracula-selection">
+              Dashboard
+            </.link>
+            <.link 
+              navigate={~p"/admin/users"} 
+              class="text-dracula-foreground hover:bg-dracula-selection block px-3 py-2 rounded-md text-base font-medium">
+              Users
+            </.link>
+            <.link 
+              navigate={~p"/admin/characters"} 
+              class="text-dracula-foreground hover:bg-dracula-selection block px-3 py-2 rounded-md text-base font-medium">
+              Characters
+            </.link>
+            <.link 
+              navigate={~p"/admin/zones"} 
+              class="text-dracula-foreground hover:bg-dracula-selection block px-3 py-2 rounded-md text-base font-medium">
+              Zones
+            </.link>
+          </div>
+        </div>
+      </nav>
 
-      <div class="flex-grow flex justify-end items-center">
-        <span class="inline-block mx-2"><%= @current_user.email %></span>
-        <.link navigate={~p"/sign-out"} method="delete" class="btn-secondary text-sm">
-          Sign Out
-        </.link>
-      </div>
+      <header class="bg-dracula shadow">
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <h1 class="text-3xl font-bold tracking-tight text-dracula-foreground">
+            <%= assigns[:page_title] || "Dashboard" %>
+          </h1>
+        </div>
+      </header>
+
+      <main>
+        <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+          <%= @inner_content %>
+        </div>
+      </main>
     </div>
-
-    <main role="main" class="px-4 py-6">
-      <%= @inner_content %>
-    </main>
-
-    <script type="text/javascript" src={Web.Endpoint.static_path("/js/app.js")}></script>
   </body>
 </html>

@@ -88,24 +88,30 @@ defmodule Web.Router do
   scope "/admin", Web.Admin, as: :admin do
     pipe_through [:browser, :logged_in, :admin]
 
-    get "/", DashboardController, :index
-    live "/dashboard/live", DashboardLive
+    # Dashboard
+    live "/", DashboardLive
 
+    # Users Management
+    live "/users", UsersLive
+    live "/users/:id", UserDetailLive
+    get "/users/export", UserExportController, :export
+
+    # Characters Management
+    live "/characters", CharactersLive
+
+    # Zones & Rooms
+    live "/zones", ZonesLive
+    live "/zones/new", ZonesLive, :new
+    live "/zones/:id", ZonesLive, :show
+
+    # Nested Rooms under Zones
+    live "/zones/:zone_id/rooms", RoomsLive
+    live "/zones/:zone_id/rooms/new", RoomsLive, :new
+    live "/zones/:zone_id/rooms/:id", RoomsLive, :show
+
+    # Staged Changes
     post "/staged-changes/commit", StagedChangeController, :commit
     resources "/staged-changes", StagedChangeController, only: [:index, :delete]
-
-    resources "/users", UserController, only: [:index, :show]
-
-    resources "/rooms", RoomController, only: [:index, :show, :edit, :update]
-    post "/rooms/:id/publish", RoomController, :publish, as: :room
-    delete "/rooms/:id/changes", RoomController, :delete_changes, as: :room_changes
-
-    resources "/zones", ZoneController, except: [:delete] do
-      resources "/rooms", RoomController, only: [:new, :create]
-    end
-
-    post "/zones/:id/publish", ZoneController, :publish, as: :zone
-    delete "/zones/:id/changes", ZoneController, :delete_changes, as: :zone_changes
   end
 
   # -------------------------------------------------------------

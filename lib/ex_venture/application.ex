@@ -6,6 +6,9 @@ defmodule ExVenture.Application do
   use Application
 
   def start(_type, _args) do
+    # Initialize Petal Components
+    :ok = Web.Components.PetalInitializer.init()
+
     children = [
       {Phoenix.PubSub, name: ExVenture.PubSub},
       ExVenture.Config.Cache,

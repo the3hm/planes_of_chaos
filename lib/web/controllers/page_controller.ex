@@ -11,7 +11,9 @@ defmodule Web.PageController do
    Renders the homepage.
    """
    def index(conn, _params) do
-     render(conn, "index.html")
+     conn
+     |> put_layout(html: {Web.Layouts, :simple})
+     |> render(:index)
    end
 
    @doc """
@@ -38,8 +40,8 @@ defmodule Web.PageController do
       characters ->
         conn
         |> assign(:characters, characters)
-        |> put_layout([{Web.LayoutView, :simple}])
-        |> render("client.html")
+        |> put_layout(html: {Web.Layouts, :simple})
+        |> render(:client)
     end
   end
 end

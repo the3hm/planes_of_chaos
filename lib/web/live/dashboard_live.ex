@@ -8,9 +8,9 @@ defmodule Web.DashboardLive do
   - Room count
   """
 
-  use Web, :live_view
+  use Web.LiveViewBase
 
-  import PetalComponents.Button
+  import PetalComponents.Button # Add back import
   import Web.DashboardComponents
 
 

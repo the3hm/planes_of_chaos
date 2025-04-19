@@ -6,10 +6,18 @@ if (process.env.WATCH == "true") {
 
 module.exports = {
   mode,
-  purge: [
-     '../lib/web/templates/**/*.html.eex',
-     './js/**/*.{js,jsx}',
-   ],
+  future: {
+    removeDeprecatedGapUtilities: true,
+    purgeLayersByDefault: true,
+  },
+  content: [
+    '../lib/**/templates/**/*.html.eex',
+    '../lib/**/live/**/*.ex',
+    '../lib/**/components/**/*.ex',
+    '../lib/**/layouts/**/*.html.heex',
+    './js/**/*.{js,jsx}',
+    '../deps/petal_components/**/*.{ex,css}',
+  ],
   theme: {
     colors: {
       transparent: 'transparent',
@@ -17,6 +25,23 @@ module.exports = {
 
       black: '#000',
       white: '#fff',
+
+      // Dracula Theme Colors
+      dracula: {
+        background: '#282a36',
+        darker: '#21222c',
+        selection: '#44475a',
+        foreground: '#f8f8f2',
+        comment: '#6272a4',
+        cyan: '#8be9fd',
+        green: '#50fa7b',
+        orange: '#ffb86c',
+        pink: '#ff79c6',
+        purple: '#bd93f9',
+        red: '#ff5555',
+        yellow: '#f1fa8c',
+        light: '#383a59'
+      },
 
       gray: {
         100: '#f7fafc',
@@ -128,6 +153,17 @@ module.exports = {
         800: '#97266d',
         900: '#702459',
       },
+      primary: {
+        100: '#ebf4ff', // indigo-100
+        200: '#c3dafe', // indigo-200
+        300: '#a3bffa', // indigo-300
+        400: '#7f9cf5', // indigo-400
+        500: '#667eea', // indigo-500
+        600: '#5a67d8', // indigo-600
+        700: '#4c51bf', // indigo-700
+        800: '#434190', // indigo-800
+        900: '#3c366b', // indigo-900
+      },
     },
     fontSize: {
       xs: '0.75rem',
@@ -150,7 +186,13 @@ module.exports = {
       'xxl': '1500px',
     },
   },
-  variants: {},
+  variants: {
+    extend: {
+      backgroundColor: ['active'],
+      opacity: ['disabled'],
+      boxShadow: ['focus'],
+    },
+  },
   plugins: [
     require('@tailwindcss/forms'),
   ],
